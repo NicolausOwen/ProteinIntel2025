@@ -10,7 +10,7 @@ class QuizController extends Controller
 {
     public function index($quizId) 
     {
-        return view('filament/user/quizz', [
+        return view('filament/user/quiz/selectedquiz', [
             'quiz' => Quiz::find($quizId)
         ]);
     }

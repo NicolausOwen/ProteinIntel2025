@@ -2,10 +2,15 @@
 
 namespace Database\Seeders;
 
+use App\Models\Option;
+use App\Models\Question;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Quiz;
+use App\Models\Section;
+use Database\Seeders\RoleSeeder;
+
 
 class DatabaseSeeder extends Seeder
 {
@@ -28,6 +33,10 @@ class DatabaseSeeder extends Seeder
         $adminUser->assignRole('admin');
 
         Quiz::factory(10)->create();
+        Question::factory(10)->create();
+        Section::factory(10)->create();
+        Option::factory(10)->create();
+
 
     }
 }

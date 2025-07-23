@@ -15,6 +15,12 @@ class Quiz extends Model
 
     protected $fillable = ['title', 'description', 'duration_minutes', 'created_by'];
 
+  
+    public function questions()
+    {
+        return $this->hasManyThrough(Question::class, Section::class);
+    }
+
     public function sections()
     {
         return $this->hasMany(Section::class);

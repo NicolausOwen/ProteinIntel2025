@@ -16,7 +16,7 @@
         <input type="hidden" name="quiz_id" value="{{ $quiz->id }}">
         <h1>{{ $quiz->title }}</h1>
         <p>{{ $quiz->description }}</p>
-        <button type="submit">Start Quiz</button>
+        <button type="submit" name = "submit">Start Quiz</button>
     </form>
 </body>
 </html>
