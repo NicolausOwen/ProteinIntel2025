@@ -4,14 +4,14 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Quizz; // Assuming you have a Quizz model
+use App\Models\Quiz; // Assuming you have a Quizz model
 
 class QuizController extends Controller
 {
-    public function index($quizzId) 
+    public function index($quizId) 
     {
-        return view('web/profiles/profile', [
-            'profile' => Quizz::find($quizzId)
+        return view('filament/user/quizz', [
+            'quiz' => Quiz::find($quizId)
         ]);
     }
     
