@@ -32,11 +32,11 @@ class QuestionResource extends Resource
 {
     protected static ?string $model = Question::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
     protected static ?string $navigationLabel = 'Questions';
     protected static ?string $modelLabel = 'Questions for Sections';
     protected static ?string $navigationGroup = 'Quizzes Controller';
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
     {
@@ -89,6 +89,12 @@ class QuestionResource extends Resource
 
                         Section::make('Tempat dan Tipe Soal')
                             ->schema([
+                                Select::make('question_group_id')
+                                    ->label('Question Group')
+                                    ->relationship('group', 'title')
+                                    ->nullable()
+                                    ->helperText('Optional - for grouped questions like Listening/Reading'),
+
                                 // ISI SOAL
                                 Textarea::make('question_text')
                                     ->label('Input Soal')
@@ -175,9 +181,9 @@ class QuestionResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('group.title')->label('Group'),
                 TextColumn::make('question_text')
-                    ->limit(60)
-                    ->searchable(),
+                    ->limit(60),
                 TextColumn::make('section.name')
                     ->label('Section')
                     ->sortable(),
