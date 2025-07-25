@@ -10,16 +10,14 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('questions', function (Blueprint $table) {
+        Schema::create('question_groups', function (Blueprint $table) {
             $table->id();
             $table->foreignId('section_id')->constrained()->onDelete('cascade');
-            $table->foreignId('question_group_id')->nullable()->constrained()->onDelete('set null');
-            $table->enum('type', ['multiple_choice', 'true_false', 'fill_blank']);
-            $table->text('question_text');
-            $table->text('explanation')->nullable();
+            $table->string('title')->nullable();
+            $table->enum('type', ['audio', 'text', 'image'])->default('text');
+            $table->text('shared_content')->nullable();
             $table->timestamps();
         });
-
     }
 
     /**
@@ -27,6 +25,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('questions');
+        Schema::dropIfExists('question_groups');
     }
 };

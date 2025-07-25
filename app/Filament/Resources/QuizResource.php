@@ -26,7 +26,7 @@ class QuizResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document';
     protected static ?string $navigationLabel = 'Create Quizzes';
-    protected static ?string $modelLabel = 'Quizzes';
+    protected static ?string $modelLabel = 'Create Quizzes';
     protected static ?string $navigationGroup = 'Quizzes Controller';
     protected static ?int $navigationSort = 1;
 
