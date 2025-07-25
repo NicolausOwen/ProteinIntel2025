@@ -11,7 +11,7 @@ class QuizController extends Controller
     public function index($quizId) 
     {
         return view('filament/user/quiz/selectedquiz', [
-            'quiz' => Quiz::find($quizId)
+            'quiz' => Quiz::select('id', 'title', 'description', 'duration_minutes')->find($quizId)
         ]);
     }
     

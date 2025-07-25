@@ -1,5 +1,5 @@
 
-{{-- quiz data --}}
+{{-- check quiz data --}}
 {{-- {{ $quiz }} --}}
 
 <!DOCTYPE html>
