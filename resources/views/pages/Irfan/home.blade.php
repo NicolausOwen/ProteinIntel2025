@@ -8,6 +8,7 @@
 </head>
 <body>
 
+    <!-- CAT Section -->
     <section class="py-16">
         <div class="p-6 relative flex flex-col-reverse lg:flex-row overflow-hidden h-auto bg-gradient-to-r from-[#7F8CAA] to-[#B8CFCE] lg:h-[350px]">
             
@@ -39,7 +40,7 @@
         </div>
     </section>
 
-    <!-- What is PROTEIN? Section -->
+    <!-- Penjelasan Singkat Section -->
     <section class="p-16">
         <div class="container mx-auto px-4 text-center">
             <h2 class="text-2xl md:text-3xl font-extrabold mb-8 text-shadow-lg">
@@ -51,7 +52,7 @@
         </div>
     </section>
 
-    <!-- Why Take PROTEIN? Section -->
+    <!-- Keunggulan Section -->
     <section class="p-16">
         <div class="container mx-auto px-4 text-center">
             <h2 class="text-2xl md:text-3xl font-extrabold mb-12 text-shadow-lg">
