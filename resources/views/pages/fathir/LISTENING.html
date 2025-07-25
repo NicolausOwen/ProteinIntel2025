@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TOEFL Listening Test</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background-color: #eef3f3;
+    }
+    .option:hover {
+      background-color: #d1e3e3;
+    }
+    .option.selected {
+      background-color: #94bdbd;
+      color: white;
+      border-color: #5e9393;
+    }
+    .nav-btn.active {
+      background-color: #475569;
+      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+      transform: scale(0.98);
+    }
+  </style>
+</head>
+<body class="bg-[#eef3f3] text-[#1d1e30] font-sans min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="py-4 px-6 shadow text-center shadow-md">
+    <!-- Timer di pojok kanan atas -->
+    <div id="timer" class="absolute top-12 right-6 flex items-center gap-2 text-sm sm:text-base font-semibold">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6 text-[#1d1e30]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2m4-2a8 8 0 11-16 0 8 8 0 0116 0z" />
+      </svg>
+      <span id="timer-text">115:00</span>
+    </div>
+
+    <!-- Judul & Progress -->
+    <div>
+      <h1 class="text-xl sm:text-2xl font-bold">Listening Test</h1>
+      <div class="text-base sm:text-lg font-semibold">1 of 10</div>
+    </div>
+  </header>
+
+  <!-- Konten Utama -->
+  <main class="flex flex-col items-center px-4 py-6 gap-4 flex-grow shadow-xl ">
+
+    <!-- Audio Player -->
+    <div class="w-full max-w-3xl bg-white p-4 rounded-2xl shadow text-center ro">
+      <p class="mb-2 font-semibold">Listen to the conversation and answer the questions below.</p>
+      <p class="mb-2 font-semibold">For question 1-5</p>
+      <audio controls class="w-full">
+        <source src="audio-file.mp3" type="audio/mp3" />
+        Your browser does not support the audio element.
+      </audio>
+    </div>
+
+    <!-- Container Soal -->
+    <div class="w-full max-w-3xl space-y-6">
+
+      <!-- Soal 1 -->
+      <div class="bg-white p-6 rounded-2xl shadow-xl transition-shadow duration-300 hover:shadow-2xl">
+        <p class="font-semibold text-lg mb-3">1. Why is the man at the registrar's office?</p>
+        <ul class="space-y-2">
+          <li class="option p-3 border rounded cursor-pointer transition">A. To register for a course</li>
+          <li class="option p-3 border rounded cursor-pointer transition">B. A book they are obtaining requirements</li>
+          <li class="option p-3 border rounded cursor-pointer transition">C. An assignment the woman is working on</li>
+          <li class="option p-3 border rounded cursor-pointer transition">D. The man's career plans</li>
+        </ul>
+      </div>
+
+      <!-- Soal 2 -->
+      <div class="bg-white p-6 rounded-2xl shadow-xl transition-shadow duration-300 hover:shadow-2xl">
+        <p class="font-semibold text-lg mb-3">2. What does the professor imply about the woman?</p>
+        <ul class="space-y-2">
+          <li class="option p-3 border rounded cursor-pointer transition">A. She should re-read the novel</li>
+          <li class="option p-3 border rounded cursor-pointer transition">B. She needs to focus on the themes</li>
+          <li class="option p-3 border rounded cursor-pointer transition">C. She has chosen a very interesting topic</li>
+          <li class="option p-3 border rounded cursor-pointer transition">D. She will struggle to meet the deadline</li>
+        </ul>
+      </div>
+
+      <!-- Tambahkan soal lainnya di sini -->
+    </div>
+
+    <!-- Tombol Navigasi -->
+   <div class="w-full max-w-3xl flex justify-between mt-6">
+  <button
+    class="nav-btn bg-[#1d1e30] text-white px-6 py-3 rounded-md shadow-md transition-all duration-300 hover:shadow-[0_8px_24px_rgba(0,0,0,0.4)]"
+  >
+    Previous
+  </button>
+  <button
+    class="nav-btn bg-[#1d1e30] text-white px-6 py-3 rounded-md shadow-md transition-all duration-300 hover:shadow-[0_8px_24px_rgba(0,0,0,0.4)]"
+  >
+    Next
+  </button>
+</div>
+
+
+  <!-- Script -->
+  <script>
+    // Timer countdown
+    let time = 115 * 60;
+    const timerText = document.getElementById('timer-text');
+    setInterval(() => {
+      const minutes = Math.floor(time / 60);
+      const seconds = time % 60;
+      timerText.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+      if (time > 0) time--;
+    }, 1000);
+
+    // Highlight selected answer
+    const options = document.querySelectorAll('.option');
+    options.forEach(option => {
+      option.addEventListener('click', () => {
+        const group = option.closest('ul').querySelectorAll('.option');
+        group.forEach(o => o.classList.remove('selected'));
+        option.classList.add('selected');
+      });
+    });
+
+    // Highlight active nav button
+    const navButtons = document.querySelectorAll('.nav-btn');
+    navButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        navButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
