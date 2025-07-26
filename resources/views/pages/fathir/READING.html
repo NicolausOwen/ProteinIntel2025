@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TOEFL Reading Test</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .option:hover {
+      background-color: #d1e3e3;
+    }
+    .option.selected {
+      background-color: #94bdbd;
+      color: white;
+      border-color: #5e9393;
+    }
+    .nav-btn.active {
+      background-color: #475569;
+      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+      transform: scale(0.98);
+    }
+  </style>
+</head>
+<body class="bg-[#eef3f3] text-[#1d1e30] font-sans min-h-screen flex flex-col">
+
+  <!-- Sticky Header with Timer -->
+  <header class="sticky top-0 z-10 bg-[#eef3f3] py-4 px-6 shadow text-center">
+    <div id="timer" class="absolute top-12 right-6 flex items-center gap-2 text-sm sm:text-base font-semibold">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6 text-[#1d1e30]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2m4-2a8 8 0 11-16 0 8 8 0 0116 0z" />
+      </svg>
+      <span id="timer-text">115:00</span>
+    </div>
+    <div>
+      <h1 class="text-xl sm:text-2xl font-bold">Reading Test</h1>
+      <div class="text-base sm:text-lg font-semibold">1 of 50</div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="flex flex-col sm:flex-row flex-grow gap-4 p-4">
+
+    <!-- Reading Passage -->
+    <div class="w-full sm:w-1/2 bg-white p-4 rounded-lg shadow 
+                sm:overflow-y-auto sm:max-h-[calc(100vh-160px)]">
+      <p class="text-sm sm:text-base leading-relaxed">
+        Ada seorang petani kebun bernama Toba. Setiap hari, Toba bekerja dengan giat di ladangnya. Menanam, mengurusi ladang, serta memanen. Di sela-sela atau di akhir kegiatan berladang, Toba tak jarang pergi ke sungai. Di sungai, ia mencari ikan untuk dibawa pulang dan dijadikan santapan, maupun dijual lagi jika ia berhasil mendapat beberapa ikan.
+        <br><br>
+        Tapi di suatu hari yang biasa-biasa saja, Toba nampak kebingungan. Setelah meladang seharian, perutnya lapar. Ia pergi ke sungai seperti biasa untuk memancing ikan. Tapi anehnya, di hari itu, tak satupun ikan yang berhasil dia dapatkan. Sambil menunggu keajaiban, ia berangan, seandainya ia memiliki istri, pastilah ia tak perlu susah payah menunggu tangkapan ikan seperti ini. Toba membayangkan betapa senangnya jika ada seorang istri di rumahnya, yang menyambut ia pulang berladang dan menyiapkan hidangan untuk dinikmati bersama.
+        <br><br>
+        Lalu kail yang tadinya bergeming tiba-tiba bergoyang. Toba pun kaget. Ia buru-buru menarik pancingnya. Seekor ikan mas yang besar terangkut di kailnya. Wah! Toba belum pernah melihat ikan sebesar itu di sungai yang selama ini biasa ia datangi. Ia segera membawa ikan tersebut pulang ke rumahnya.
+        <br><br>
+        Setibanya di rumah, Toba bergegas untuk siap-siap memasak. Ia menyimpan ikan tangkapannya baik-baik di dapur sementara dia mempersiapkan hal lainnya. Namun betapa terkejutnya Toba, ketika ia kembali ke dapur, ikannya sudah tidak ada. Lebih mengejutkan lagi ketika ada sosok seorang perempuan yang begitu menawan. Perempuan itu berterima kasih pada Toba. Masih terkejut, Toba berusaha bertanya siapa perempuan itu dan mengapa ia ada di rumahnya. Perempuan itu mengaku bahwa dirinya adalah seorang putri yang dikutuk dewa menjadi seekor ikan yang diselamatkan dari sungai oleh Toba.
+        <br><br>
+        Sang putri merasa berhutang budi pada Toba. Sebagai wujud rasa terima kasihnya, sang putri bersedia menjadi istri Toba. Namun ada satu syarat bagi Toba sebelum menjadikannya istri, yaitu merahasiakan asal-usul sang putri dari seekor ikan. Toba tidak keberatan. Lantas keduanya pun menjadi sepasang suami istri.
+      </p>
+    </div>
+
+    <!-- Question & Answers -->
+    <div class="w-full sm:w-1/2 bg-white p-4 rounded-lg shadow flex flex-col justify-between">
+      <div>
+        <p class="mb-4 font-semibold text-lg">The word <span class="font-bold text-purple-700">“skeptical”</span> in the passage is closest in meaning to:</p>
+        <ul id="options" class="space-y-2">
+          <li class="option p-3 border rounded cursor-pointer transition">A. doubting</li>
+          <li class="option p-3 border rounded cursor-pointer transition">B. ignorant</li>
+          <li class="option p-3 border rounded cursor-pointer transition">C. growing</li>
+          <li class="option p-3 border rounded cursor-pointer transition">D. serious</li>
+        </ul>
+      </div>
+      <div class="flex justify-between mt-6">
+        <button id="prevBtn" class="nav-btn bg-[#1d1e30] text-white px-4 py-2 rounded">Previous</button>
+        <button id="nextBtn" class="nav-btn bg-[#1d1e30] text-white px-4 py-2 rounded">Next</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Script -->
+  <script>
+    // Timer countdown
+    let time = 115 * 60;
+    const timerText = document.getElementById('timer-text');
+    setInterval(() => {
+      const minutes = Math.floor(time / 60);
+      const seconds = time % 60;
+      timerText.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+      if (time > 0) time--;
+    }, 1000);
+
+    // Highlight selected answer
+    const options = document.querySelectorAll('.option');
+    options.forEach(option => {
+      option.addEventListener('click', () => {
+        options.forEach(o => o.classList.remove('selected'));
+        option.classList.add('selected');
+      });
+    });
+
+    // Highlight active nav button
+    const navButtons = document.querySelectorAll('.nav-btn');
+    navButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        navButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

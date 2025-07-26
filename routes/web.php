@@ -7,12 +7,8 @@ use App\Http\Controllers\User\ResultController;
 use App\Http\Controllers\User\QuizAttemptController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('home');
 });
-
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
