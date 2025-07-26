@@ -21,7 +21,7 @@ class SectionFactory extends Factory
     public function definition(): array
     {
         return [
-            'quiz_id' => Quiz::factory(),
+            'quiz_id' => Quiz::inRandomOrder()->first()->id,
             'name' => $this->faker->sentence(2, 4),
             'order' => $this->faker->numberBetween(1, 10),
             'created_at' => $this->faker->dateTimeBetween('-6 months', 'now'),

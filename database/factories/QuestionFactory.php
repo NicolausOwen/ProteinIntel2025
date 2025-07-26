@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Question;
+use App\Models\QuestionGroup;
 use App\Models\Section;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -24,10 +25,10 @@ class QuestionFactory extends Factory
         $type = $this->faker->randomElement($questionTypes);
         
         return [
-            'section_id' => Section::factory(),
+            'section_id' => Section::inRandomOrder()->first()->id,
+            'question_group_id' => QuestionGroup::inRandomOrder()->first()->id,
             'type' => $type,
             'question_text' => $this->generateQuestionText($type),
-            'audio_url' => $this->faker->boolean(20) ? $this->faker->url() : null,
             'explanation' => $this->faker->paragraph(2, 3),
             'created_at' => $this->faker->dateTimeBetween('-6 months', 'now'),
             'updated_at' => function (array $attributes) {

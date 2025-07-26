@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use App\Models\Quiz;
 use App\Models\Section;
+use App\Models\QuestionGroup;
 use Database\Seeders\RoleSeeder;
 
 
@@ -33,10 +34,16 @@ class DatabaseSeeder extends Seeder
         $adminUser->assignRole('admin');
 
         Quiz::factory(10)->create();
-        Question::factory(10)->create();
         Section::factory(10)->create();
+        QuestionGroup::factory(10)->create();
+        Question::factory(10)->create();
         Option::factory(10)->create();
 
+        // QuestionGroup::factory()
+        //     ->count(3)
+        //     ->essay()
+        //     ->withLongSharedContent()
+        //     ->create();
 
     }
 }

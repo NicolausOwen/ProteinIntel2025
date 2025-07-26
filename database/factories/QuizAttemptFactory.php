@@ -33,7 +33,7 @@ class QuizAttemptFactory extends Factory
 
         return [
             'user_id' => User::factory(),
-            'quiz_id' => Quiz::factory(),
+            'quiz_id' => random_int(1, 5),
             'started_at' => $startedAt,
             'completed_at' => $completedAt,
             'score' => $score,

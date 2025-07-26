@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\QuizController;
 use App\Http\Controllers\User\ResultController;
 use App\Http\Controllers\User\QuizAttemptController;
+use App\Http\Controllers\User\SectionController;
 
 Route::get('/', function () {
     return view('home');
@@ -23,7 +24,7 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/quizzes/{quiz}/start', [QuizController::class, 'index'])->name('user.quiz.show'); // spesific quizz
     Route::post('/quizzes/{quiz}/start', [QuizAttemptController::class, 'start'])->name('user.quiz.start'); // start a quiz 
     
-    Route::get('/attempt/{attempt}/section', [QuizAttemptController::class, 'showSections'])->name('user.attempt.show'); 
+    Route::get('/attempt/{attempt}/section', [SectionController::class, 'showSections'])->name('user.attempt.show'); 
     Route::get('/attempt/{attempt}/section/{section}/question/{questionNumber?}', [QuizAttemptController::class, 'showQuestion'])->name('user.attempt.start'); // show a specific question in the quiz attempt
 
     Route::post('/quizzes/{quiz}/finish', [QuizController::class, 'submit'])->name('user.quiz.submit');

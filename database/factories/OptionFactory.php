@@ -21,7 +21,7 @@ class OptionFactory extends Factory
     public function definition(): array
     {
         return [
-            'question_id' => Question::factory(),
+            'question_id' => Question::inRandomOrder()->first()->id,
             'option_text' => $this->faker->sentence(3, 6),
             'is_correct' => false, // Default to false, will be set by states
             'created_at' => $this->faker->dateTimeBetween('-6 months', 'now'),
