@@ -9,17 +9,19 @@ use App\Models\QuestionGroup;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Question extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['section_id', 'type', 'question_text', 'audio_url', 'explanation'];
-
-    public function section()
-    {
-        return $this->belongsTo(Section::class);
-    }
+    protected $fillable = [
+        'question_group_id',
+        'type',
+        'question_text',
+        'audio_url',
+        'explanation'
+    ];
 
     public function options()
     {
@@ -30,9 +32,13 @@ class Question extends Model
     {
         return $this->hasMany(Answer::class);
     }
-    public function group()
+    public function group(): BelongsTo
     {
         return $this->belongsTo(QuestionGroup::class, 'question_group_id');
+    }
+    public function section(): BelongsTo
+    {
+        return $this->belongsTo(Section::class, 'section_id');
     }
 
 }
