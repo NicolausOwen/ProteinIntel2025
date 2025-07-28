@@ -25,7 +25,6 @@ class QuestionFactory extends Factory
         $type = $this->faker->randomElement($questionTypes);
         
         return [
-            'section_id' => Section::inRandomOrder()->first()->id,
             'question_group_id' => QuestionGroup::inRandomOrder()->first()->id,
             'type' => $type,
             'question_text' => $this->generateQuestionText($type),

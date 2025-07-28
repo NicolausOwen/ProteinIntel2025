@@ -8,6 +8,7 @@ use App\Models\Answer;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Cache;
 
 class QuizAttempt extends Model
 {
@@ -42,6 +43,13 @@ class QuizAttempt extends Model
     public function answers()
     {
         return $this->hasMany(Answer::class);
+    }
+
+    protected static function booted()
+    {
+        static::saved(function ($attempt) {
+            Cache::forget("quiz_attempt_user_{$attempt->id}");
+    });
     }
 }
 

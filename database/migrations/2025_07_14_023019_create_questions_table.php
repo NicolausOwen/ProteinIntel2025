@@ -12,7 +12,6 @@ return new class extends Migration {
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('section_id')->constrained()->onDelete('cascade');
             $table->foreignId('question_group_id')->nullable()->constrained()->onDelete('set null');
             $table->enum('type', ['multiple_choice', 'true_false', 'fill_blank']);
             $table->text('question_text');

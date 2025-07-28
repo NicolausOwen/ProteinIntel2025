@@ -7,9 +7,13 @@
     <title>Document</title>
 </head>
 <body>
+    <h1>Quiz : {{ $attempt->quiz->title }}</h1>
+    <h2>description :</h2>
+    <h3>{{ $attempt->quiz->description }}</h3>
     @foreach ($sections as $section )
-        <h2>
-            <a href="{{ route('user.attempt.start', ['attempt' => $attempt->id, 'section' => $section->id]) }}">
+        <h2> 
+            {{-- rombak route agar user diarahkan ke question group --}}
+            <a href="{{ route('user.attempt.questions', ['attempt' => $attempt->id, 'section' => $section->id]) }}">
                 section :{{ $section->name }}
             </a>
         </h2>
