@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About Us</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 text-gray-800">
+
+    <nav class="bg-[#8794ba] text-white py-4">
+      <div class="text-center font-bold text-lg">NAVBAR</div>
+    </nav>
+
+    <section class="py-10 bg-white text-center">
+      <h1 class="text-2xl font-bold mb-2">“Visi Protein. <br> Lorem ipsum.”</h1>
+      <p class="max-w-xl mx-auto text-sm text-gray-600">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</p>
+    </section>
+
+    <section class="py-10 bg-gray-50 px-4">
+      <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-8">
+        <img src="LOGO PROTEIN 25 1.svg" alt="Logo" class="w-40">
+        <div>
+          <h2 class="text-xl font-bold mb-2">We are PROTEIN!</h2>
+          <p class="text-sm mb-2">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua
+          </p>
+          <p class="text-sm font-semibold mb-1">Arti dari logo Protein:</p>
+          <p class="text-sm">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua
+          </p>
+        </div>
+      </div>
+    </section>
+
+   <section class="py-10 bg-[#EAEFEF] px-4">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-2xl font-bold mb-6 text-[#7F8CAA]">Misi PROTEIN</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-6">
+
+        <div class="bg-[#B8CFCE] p-4 rounded-lg shadow text-center">
+          <img src="https://static.thenounproject.com/png/graduation-cap-icon-2023633-512.png"
+               alt="Graduation Cap" class="h-16 mx-auto mb-2 object-contain">
+          <p class="text-sm">Lorem ipsum dolor sit amet.</p>
+        </div>
+
+        <div class="bg-[#B8CFCE] p-4 rounded-lg shadow text-center">
+          <img src="https://static.thenounproject.com/png/education-book-icon-2551238-512.png"
+               alt="Open Book" class="h-16 mx-auto mb-2 object-contain">
+          <p class="text-sm">Lorem ipsum dolor sit amet.</p>
+        </div>
+
+        <div class="bg-[#B8CFCE] p-4 rounded-lg shadow text-center">
+          <img src="https://static.thenounproject.com/png/monitor-icon-4534-512.png"
+               alt="Monitor" class="h-16 mx-auto mb-2 object-contain">
+          <p class="text-sm">Lorem ipsum dolor sit amet.</p>
+        </div>
+
+        <div class="bg-[#B8CFCE] p-4 rounded-lg shadow text-center">
+          <img src="https://static.thenounproject.com/png/headset-icon-388920-512.png"
+               alt="Headset" class="h-16 mx-auto mb-2 object-contain">
+          <p class="text-sm">Lorem ipsum dolor sit amet.</p>
+        </div>
+
+        <div class="bg-[#B8CFCE] p-4 rounded-lg shadow text-center">
+          <img src="https://static.thenounproject.com/png/book-icon-16437-512.png"
+               alt="Notebook" class="h-16 mx-auto mb-2 object-contain">
+          <p class="text-sm">Lorem ipsum dolor sit amet.</p>
+        </div>
+
+        <div class="bg-[#B8CFCE] p-4 rounded-lg shadow text-center">
+          <img src="https://static.thenounproject.com/png/stopwatch-icon-1085985-512.png"
+               alt="Stopwatch" class="h-16 mx-auto mb-2 object-contain">
+          <p class="text-sm">Lorem ipsum dolor sit amet.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+<section class="py-10 bg-gray-50 px-6">
+  <div class="max-w-4xl mx-auto space-y-4 text-lg leading-relaxed text-justify">
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer fringilla libero a turpis viverra vehicula. Sed eu pellentesque ligula, ac pharetra justo. Donec ut erat vitae tortor accumsan convallis. Aenean ornare commodo purus sed semper. Sed fermentum mi ac mi condimentum.</p>
+    <p>Lorem sed sagittis, et, in imperdiet urna. Cras iaculis amet ac purus molestie lacinia. Mauris id dolor velit et tempus imperdiet sit amet vel arcu. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vivamus elementum venenatis quam. Fusce ullamcorper at a justo placerat. Nulla facilisi.</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer fringilla libero a turpis viverra vehicula. Sed eu pellentesque ligula, ac pharetra justo. Donec ut erat vitae tortor accumsan convallis. Aenean ornare commodo purus sed semper. Sed fermentum mi ac mi condimentum.</p>
+  </div>
+</section>
+
+    <footer class="bg-[#8794ba] text-white text-center py-4">
+      FOOTER
+    </footer>
+
+  </body>
+</html>
