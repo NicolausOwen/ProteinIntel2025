@@ -17,24 +17,22 @@ class QuizController extends Controller
         ]);
     }
     
-    // mencetak list section dari quiz yang diambil
     public function showSections($attemptId)
     {
         $attempt = QuizAttempt::select('id', 'user_id', 'quiz_id')
             ->with(['quiz' => function($query) {
-                $query->select('id', 'title', 'description') // field yang diperlukan
+                $query->select('id', 'title', 'description') 
                       ->with(['sections' => function($q) {
                           $q->select('id', 'quiz_id', 'name', 'order');
                       }]);
             }])
-            ->findOrFail($attemptId); // ambil attempt berdasarkan ID beserta relasi quiz
+            ->findOrFail($attemptId); 
 
         // user credentials validation
         if ($attempt->user_id !== Auth::id()) {
             abort(403);
         }
 
-        // parse the sections
         $sections = $attempt->quiz->sections;
 
         if ($sections->isEmpty()) {

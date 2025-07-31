@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\QuizController;
 use App\Http\Controllers\User\ResultController;
 use App\Http\Controllers\User\QuizAttemptController;
-use App\Http\Controllers\User\SectionController;
 
 Route::get('/', function () {
     return view('home');
@@ -17,7 +16,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware(['auth', 'role:user'])->group(function () {
+Route::prefix('user')->middleware(['auth', 'role:user'])->group(function () {
     // Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('user.dashboard');
     // Route::get('/quizzes', [QuizController::class, 'index'])->name('user.quizzes'); // List all quizzes
 

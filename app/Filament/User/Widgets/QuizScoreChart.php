@@ -23,7 +23,9 @@ class QuizScoreChart extends ChartWidget
                     'data' => $attempts->pluck('score'),
                 ],
             ],
-            'labels' => $attempts->pluck('completed_at')->map(fn ($date) => $date->format('d M')),
+            'labels' => $attempts->pluck('completed_at')->map(function ($date) {
+                return $date ? $date->format('d M') : 'Belum selesai';
+            }),
         ];
     }
 

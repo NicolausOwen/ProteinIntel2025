@@ -19,14 +19,13 @@ class QuizAttemptController extends Controller
         // Validasi quiz exists
         // $quiz = Quiz::findOrFail($quizId);
 
-        // Cek apakah user sudah pernah attempt quiz ini (optional)
+        // cek apakah user sudah memiliki quiz attempt yang belum selesai
         $existingAttempt = QuizAttempt::where('user_id', $userId)
                                      ->where('quiz_id', $quizId)
                                      ->whereNull('completed_at')
                                      ->first();
 
         if ($existingAttempt) {
-            // Jika sudah ada attempt yang sedang berjalan
             return redirect()->route('user.attempt.start', ['attempt' => $existingAttempt->id])
                             ->with('info', 'Anda memiliki quiz yang sedang berjalan');
         }
@@ -36,7 +35,7 @@ class QuizAttemptController extends Controller
             'user_id' => $userId,
             'quiz_id' => $quizId,
             'started_at' => now(),
-            'completed_at' => null, // belum selesai
+            'completed_at' => null,
             'score' => 0,
             'correct_count' => 0,
             'wrong_count' => 0,
@@ -105,14 +104,11 @@ class QuizAttemptController extends Controller
         });
 
         if (is_null($questionGroupId)) {
-            // Jika tidak ada questionGroupId, ambil group pertama di section
             $questionGroupId = $groupIds[0];
         }
 
-        // Cari posisi sekarang di dalam array
         $currentIndex = array_search($questionGroupId, $groupIds);
 
-        // Ambil ID sebelumnya dan sesudahnya, kalau ada
         $nextGroupId = $groupIds[$currentIndex + 1] ?? null;
         $prevGroupId = $groupIds[$currentIndex - 1] ?? null;
 
@@ -138,6 +134,29 @@ class QuizAttemptController extends Controller
             'nextGroupId',
             'prevGroupId'
         ));
+    }
+
+    public function saveAnswer(Request $request, $attemptId)
+    {
+        $request->validate([
+            'question_id' => 'required|exists:questions,id',
+            'selected_option_id' => 'required|exists:options,id',
+        ]);
+
+        $userAttemptCacheKey = "quiz_attempt_user_{$attemptId}";
+
+        $userAttemptId = Cache::remember($userAttemptCacheKey, 3600, function() use ($attemptId) {
+            return QuizAttempt::where('id', $attemptId)->value('user_id');
+        });
+
+        if ($userAttemptId !== Auth::id()) {
+            abort(403);
+        }
+
+        // Logic untuk menyimpan jawaban
+        // ...
+
+        return redirect()->back()->with('success', 'Jawaban berhasil disimpan.');
     }
 
 }
