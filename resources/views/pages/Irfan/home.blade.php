@@ -20,7 +20,7 @@
             <div class="w-full gap-2 relative flex flex-col lg:flex-row items-center px-6 lg:px-10">
                 
                 <div class="w-[80%] md:w-[60%] h-[95%] lg:ml-[-100px] flex justify-center lg:mx-6 mb-4 lg:mb-0">
-                        <img src="{{ asset('image/gambar.jpg') }}" alt="gambar" class="rounded-[200px] w-full max-w-lg h-auto object-cover">
+                        <img src="{{ asset('img/gambar.jpg') }}" alt="gambar" class="rounded-[200px] w-full max-w-lg h-auto object-cover">
                 </div>
 
                 <div class="w-full lg:w-[40%] text-center lg:mr-auto">
