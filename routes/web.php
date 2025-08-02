@@ -26,7 +26,7 @@ Route::prefix('user')->middleware(['auth', 'role:user'])->group(function () {
     
     Route::get('/attempt/{attempt}/section', [QuizController::class, 'showSections'])->name('user.quiz.sections'); 
     Route::get('/attempt/{attempt}/section/{section}/page/{questionGroupId?}', [QuizAttemptController::class, 'showQuestion'])->name('user.attempt.questions'); // show a specific question in the quiz attempt
-    Route::post('/attempt/{attempt}/saveAnswer', [QuizAttemptController::class, 'saveAnswer'])->name('user.attempt.save.answer'); // submit answer for a question
+    // Route::post('/attempt/{attempt}/saveAnswer', [QuizAttemptController::class, 'saveAnswer'])->name('user.attempt.save.answer'); // submit answer for a question
 
     Route::post('/attempt/{attempt}/save-answer-ajax', [QuizAttemptController::class, 'saveAnswerAjax'])
         ->name('user.attempt.save.answer.ajax');
