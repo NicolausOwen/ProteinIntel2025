@@ -7,6 +7,14 @@ Route::get('/', function () {
     return view('home');
 });
 
+Route::get('/take-a-quiz', function () {
+    return view('quiz');
+});
+
+Route::get('/about-us', function () {
+    return view('about-us');
+});
+
 Route::get('/dashboard', function () {
     return redirect()->route('filament.user.pages.dashboard');
 });
