@@ -12,7 +12,7 @@ class QuizController extends Controller
 {
     public function index($quizId) 
     {
-        return view('pages/quiz/selectedquiz', [
+        return view('pages/quiz/quiZDetail', [
             'quiz' => Quiz::select('id', 'title', 'description', 'duration_minutes')->find($quizId)
         ]);
     }
@@ -21,12 +21,21 @@ class QuizController extends Controller
     {
         $attempt = QuizAttempt::select('id', 'user_id', 'quiz_id')
             ->with(['quiz' => function($query) {
-                $query->select('id', 'title', 'description') 
+                $query->select('id', 'title', 'description', 'duration_minutes') 
                       ->with(['sections' => function($q) {
                           $q->select('id', 'quiz_id', 'name', 'order');
                       }]);
             }])
             ->findOrFail($attemptId); 
+
+        session([
+            'quiz_data' => [
+                'id' => $attempt->quiz->id,
+                'duration_minutes' => $attempt->quiz->duration_minutes,
+                'started_at' => now(),
+                'title' => $attempt->quiz->title
+            ]
+        ]);
 
         // user credentials validation
         if ($attempt->user_id !== Auth::id()) {

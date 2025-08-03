@@ -33,8 +33,7 @@ Route::prefix('user')->middleware(['auth', 'role:user'])->group(function () {
     Route::get('/attempt/{attempt}/stats', [QuizAttemptController::class, 'getAttemptStats'])
         ->name('user.attempt.stats');
 
-    Route::post('/quizzes/{quiz}/finish', [QuizController::class, 'submit'])->name('user.quiz.submit');
-    Route::get('/results/{attempt}', [ResultController::class, 'show'])->name('user.result.show');
+    Route::post('/attempt/{attempt}/submit', [QuizAttemptController::class, 'attemptSubmit'])->name('user.attempt.submit');
 });
 
 require __DIR__ . '/auth.php';

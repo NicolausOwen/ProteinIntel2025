@@ -52,39 +52,6 @@ class QuizAttemptController extends Controller
         ]);
     }
 
-    
-    // public function showQuestion($attemptId, $questionGroupId = 1)
-    // {
-    //     $userAttemptId = QuizAttempt::where('id', $attemptId)->value('user_id');
-
-
-    //     $questionGroupId = [];
-
-        
-    //     if ($userAttemptId !== Auth::id()) {
-    //         abort(403);
-    //     }
-
-    //     $questionsGroup = QuestionGroup::with([
-    //         'questions' => function($query) {
-    //             $query->select('id', 'question_text', 'explanation', 'question_group_id');
-    //         },
-    //         'questions.options' => function($query) {
-    //             $query->select('id', 'option_text', 'is_correct', 'question_id');
-    //         }
-    //     ])
-    //     ->findOrFail($questionGroupId);
-        
-
-    //     // if (!$currentQuestion) {
-    //     //     // Jika question tidak ditemukan, redirect ke hasil
-    //     //     return redirect()->route('quiz.section.finish', ['attempt' => $attempt->id]);
-    //     // }
-
-    //     return view('filament/user/quiz/quizAttempt', 
-    //     compact('userAttemptId', 'questionsGroup', 'questionGroupId'));
-    // }
-
     public function showQuestion($attemptId, $sectionId, $questionGroupId = NULL)
     {
         // Cache key untuk user attempt validation
@@ -124,7 +91,7 @@ class QuizAttemptController extends Controller
         $questionsGroup = Cache::remember($questionGroupCacheKey, 1800, function() use ($questionGroupId) {
             return QuestionGroup::with([
                 'questions' => function ($query) {
-                    $query->select('id', 'question_text', 'explanation', 'question_group_id');
+                    $query->select('id', 'question_text', 'explanation', 'question_group_id', 'type');
                 },
                 'questions.options' => function ($query) {
                     $query->select('id', 'option_text', 'is_correct', 'question_id');
@@ -147,45 +114,21 @@ class QuizAttemptController extends Controller
             'existingAnswers'
         ));
     }
-
-    // public function saveAnswer(Request $request, $attemptId)
-    // {
-    //     $request->validate([
-    //         'question_id' => 'required|exists:questions,id',
-    //         'selected_option_id' => 'required|exists:options,id',
-    //     ]);
-
-    //     $userAttemptCacheKey = "quiz_attempt_user_{$attemptId}";
-
-    //     $userAttemptId = Cache::remember($userAttemptCacheKey, 3600, function() use ($attemptId) {
-    //         return QuizAttempt::where('id', $attemptId)->value('user_id');
-    //     });
-
-    //     if ($userAttemptId !== Auth::id()) {
-    //         abort(403);
-    //     }
-
-    //     // Logic untuk menyimpan jawaban
-    //     // ...
-
-    //     return redirect()->back()->with('success', 'Jawaban berhasil disimpan.');
-    // }
-
     
     /**
      * Save answers via AJAX for a question group (optimized for bulk operations)
      */
+   
     public function saveAnswerAjax(Request $request, $attemptId)
     {
         try {
             $request->validate([
                 'answers' => 'required|array',
-                'answers.*' => 'required|integer',
                 'question_group_id' => 'required|integer',
                 'section_id' => 'required|integer'
             ]);
 
-            $attempt = QuizAttempt::findOrFail($attemptId);
+            $attempt = QuizAttempt::select('user_id')->findOrFail($attemptId);
 
             // Verify user owns this attempt
             if ($attempt->user_id !== Auth::id()) {
@@ -199,75 +142,86 @@ class QuizAttemptController extends Controller
             DB::beginTransaction();
 
             try {
-                // OPTIMASI 1: Single query untuk validasi semua question dalam group
+                // Get questions with their types
                 $questionIds = array_keys($answers);
-                $validQuestions = Question::whereIn('id', $questionIds)
+                $questions = Question::whereIn('id', $questionIds)
                     ->where('question_group_id', $questionGroupId)
-                    ->pluck('id')
-                    ->toArray();
+                    ->get()
+                    ->keyBy('id');
 
-                if (count($validQuestions) !== count($questionIds)) {
+                if ($questions->count() !== count($questionIds)) {
                     throw new \Exception('Invalid questions detected');
                 }
 
-                // OPTIMASI 2: Single query untuk cek existing answers dalam group ini
+                // Get existing answers
                 $existingAnswers = Answer::where('quiz_attempt_id', $attemptId)
                     ->whereIn('question_id', $questionIds)
                     ->get()
                     ->keyBy('question_id');
 
-                // OPTIMASI 3: Prepare bulk operations
+                // Prepare bulk operations
                 $answersToInsert = [];
                 $answersToUpdateIds = [];
                 $currentTimestamp = now();
 
-                foreach ($answers as $questionId => $optionId) {
+                foreach ($answers as $questionId => $answerValue) {
+                    $question = $questions[$questionId];
+
                     if (isset($existingAnswers[$questionId])) {
-                        // Collect IDs for bulk update
-                        $answersToUpdateIds[] = $existingAnswers[$questionId]->id;
+                        // Update existing answer
+                        $existingAnswer = $existingAnswers[$questionId];
+
+                        if ($question->type === 'fill_blank') {
+                            // For fill_blank, update text and check correctness
+                            $isCorrect = $this->checkFillBlankCorrectness($question, $answerValue);
+                            Answer::where('id', $existingAnswer->id)->update([
+                                'selected_option_id' => null,
+                                'fill_answer_text' => $answerValue,
+                                'is_correct' => 0,
+                                'updated_at' => $currentTimestamp
+                            ]);
+                        } else {
+                            // For multiple choice/true_false, update option
+                            $option = Option::find($answerValue);
+                            Answer::where('id', $existingAnswer->id)->update([
+                                'selected_option_id' => $answerValue,
+                                'fill_answer_text' => null,
+                                'is_correct' => $option->is_correct ?? false,
+                                'updated_at' => $currentTimestamp
+                            ]);
+                        }
                     } else {
-                        // Prepare for bulk insert
-                        $answersToInsert[] = [
-                            'quiz_attempt_id' => $attemptId,
-                            'question_id' => $questionId,
-                            'selected_option_id' => $optionId,
-                            'created_at' => $currentTimestamp,
-                            'updated_at' => $currentTimestamp
-                        ];
-                    }
-                }
-
-                // OPTIMASI 4: Execute bulk operations
-
-                // Bulk insert new answers (single query)
-                if (!empty($answersToInsert)) {
-                    Answer::insert($answersToInsert);
-                }
-
-                // Bulk update existing answers (single query per update)
-                if (!empty($answersToUpdateIds)) {
-                    foreach ($answers as $questionId => $optionId) {
-                        if (isset($existingAnswers[$questionId])) {
-                            Answer::where('id', $existingAnswers[$questionId]->id)
-                                ->update([
-                                    'selected_option_id' => $optionId,
-                                    'updated_at' => $currentTimestamp
-                                ]);
+                        // Prepare new answer for bulk insert
+                        if ($question->type === 'fill_blank') {
+                            $isCorrect = $this->checkFillBlankCorrectness($question, $answerValue);
+                            $answersToInsert[] = [
+                                'quiz_attempt_id' => $attemptId,
+                                'question_id' => $questionId,
+                                'selected_option_id' => null,
+                                'fill_answer_text' => $answerValue,
+                                'is_correct' => 0,
+                                'created_at' => $currentTimestamp,
+                                'updated_at' => $currentTimestamp
+                            ];
+                        } else {
+                            $option = Option::find($answerValue);
+                            $answersToInsert[] = [
+                                'quiz_attempt_id' => $attemptId,
+                                'question_id' => $questionId,
+                                'selected_option_id' => $answerValue,
+                                'fill_answer_text' => null,
+                                'is_correct' => $option->is_correct ?? false,
+                                'created_at' => $currentTimestamp,
+                                'updated_at' => $currentTimestamp
+                            ];
                         }
                     }
                 }
 
-                // Manual update is_correct
-                foreach ($answers as $questionId => $optionId) {
-                    $option = Option::find($optionId);
-                    Answer::where('quiz_attempt_id', $attemptId)
-                          ->where('question_id', $questionId)
-                          ->update(['is_correct' => $option->is_correct ?? false]);
+                // Bulk insert new answers
+                if (!empty($answersToInsert)) {
+                    Answer::insert($answersToInsert);
                 }
-
-                // OPTIMASI 5: Update attempt progress dengan minimal queries
-                // $this->updateAttemptProgress($attempt, $attemptId);
-                // logic optimasi ini perlu diperbaiki->teradapat kesalahan pada function updateAttemptProgress
 
                 DB::commit();
 
@@ -298,6 +252,27 @@ class QuizAttemptController extends Controller
     }
 
     /**
+     * Check if fill blank answer is correct
+     */
+    private function checkFillBlankCorrectness($question, $userAnswer)
+    {
+        // Jika question memiliki field correct_answer
+        if (isset($question->correct_answer) && !empty($question->correct_answer)) {
+            // Case-insensitive comparison, trimmed
+            return strtolower(trim($userAnswer)) === strtolower(trim($question->correct_answer));
+        }
+
+        // Jika menggunakan options untuk menyimpan jawaban yang benar (alternatif)
+        $correctOption = $question->options()->where('is_correct', true)->first();
+        if ($correctOption) {
+            return strtolower(trim($userAnswer)) === strtolower(trim($correctOption->option_text));
+        }
+
+        // Jika tidak ada referensi jawaban yang benar, return null (perlu manual grading)
+        return null;
+    }
+
+    /**
      * Update attempt progress (optimized version)
      */
     private function updateAttemptProgress($attempt, $attemptId)
@@ -325,33 +300,18 @@ class QuizAttemptController extends Controller
             ]);
     }
 
-    /**
-     * Get attempt statistics (optional method for additional info)
-     */
-    public function getAttemptStats($attemptId)
+    public function attemptSubmit($attemptId)
     {
-        try {
-            $attempt = QuizAttempt::with([
-                'answers.question.questionGroup.section',
-                'quiz.sections.questionGroups.questions'
-            ])->findOrFail($attemptId);
+        $attempt = QuizAttempt::findOrFail($attemptId);
 
-            if ($attempt->user_id !== Auth::id()) {
-                return response()->json(['error' => 'Unauthorized'], 403);
-            }
-
-            $stats = [
-                'total_questions' => $attempt->total_questions_count ?? 0,
-                'answered_questions' => $attempt->answered_questions_count ?? 0,
-                'progress_percentage' => $attempt->progress_percentage ?? 0,
-                'sections_completed' => 0,
-                'time_spent' => $attempt->created_at->diffInMinutes(now())
-            ];
-
-            return response()->json($stats);
-
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to get stats'], 500);
+        // Validasi user
+        if ($attempt->user_id !== Auth::id()) {
+            abort(403);
         }
+
+        $attempt->completed_at = now();
+        $attempt->save();
+
+        return redirect()->route('user.quiz.index', ['quiz' => $attempt->quiz_id]);
     }
 }

@@ -52,4 +52,4 @@ class QuizAttempt extends Model
     });
     }
 }
-
+    
