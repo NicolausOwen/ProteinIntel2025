@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class QuizController extends Controller
 {
-    public function index($quizId) 
+    public function index($quizId)
     {
         $hasCompletedQuiz = QuizAttempt::where('quiz_id', $quizId)
             ->where('user_id', Auth::id())
@@ -18,7 +18,7 @@ class QuizController extends Controller
             ->exists();
 
         if ($hasCompletedQuiz) {
-            return redirect()->route('home') 
+            return redirect()->route('home')
                 ->with('message', 'Anda sudah menyelesaikan quiz ini sebelumnya.');
         }
 
@@ -27,17 +27,21 @@ class QuizController extends Controller
 
         return view('pages/quiz/quiZDetail', compact('quiz'));
     }
-    
+
     public function showSections($attemptId)
     {
         $attempt = QuizAttempt::select('id', 'user_id', 'quiz_id')
-            ->with(['quiz' => function($query) {
-                $query->select('id', 'title', 'description', 'duration_minutes') 
-                      ->with(['sections' => function($q) {
-                          $q->select('id', 'quiz_id', 'name', 'order');
-                      }]);
-            }])
-            ->findOrFail($attemptId); 
+            ->with([
+                'quiz' => function ($query) {
+                    $query->select('id', 'title', 'description', 'duration_minutes')
+                        ->with([
+                            'sections' => function ($q) {
+                                $q->select('id', 'quiz_id', 'name', 'order');
+                            }
+                        ]);
+                }
+            ])
+            ->findOrFail($attemptId);
 
         session([
             'quiz_data' => [
@@ -57,7 +61,7 @@ class QuizController extends Controller
 
         if ($sections->isEmpty()) {
             return redirect()->route('user.result.show', ['attempt' => $attempt->id])
-                             ->with('error', 'Tidak ada section dalam quiz ini.');
+                ->with('error', 'Tidak ada section dalam quiz ini.');
         }
 
         return view('pages/quiz/quizSection', compact('attempt', 'sections'));

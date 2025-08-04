@@ -4,8 +4,6 @@
             <p class="text-lg">No Quizzes Available.</p>
         </div>
     @else
-        <h2 class="text-xl font-bold mb-4">Available Quizzes</h2>
-
         @foreach ($quizzes as $quiz)
             <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow mb-4">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
@@ -15,8 +13,12 @@
                 <p class="text-sm text-gray-500 dark:text-gray-400">Duration: {{ $quiz->duration_minutes }} minutes</p>
 
                 <div class="mt-2">
-                    <x-filament::button disabled>
-                        Start Quiz (Coming Soon)
+                    <x-filament::button 
+                        tag="a" 
+                        color="primary" 
+                        :href="route('user.quiz.index', $quiz->id)"
+                    >
+                        Start Quiz
                     </x-filament::button>
                 </div>
             </div>
