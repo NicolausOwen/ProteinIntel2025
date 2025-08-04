@@ -98,10 +98,12 @@ class QuizAttemptController extends Controller
                 ])->findOrFail($questionGroupId);
             });
       
-        $existingAnswers = Answer::where('quiz_attempt_id', $attemptId)
-            ->whereIn('question_id', $questionsGroup->questions->pluck('id'))
-            ->pluck('selected_option_id', 'question_id')
-            ->toArray();
+            $existingAnswers = Answer::select('id', 'question_id', 'selected_option_id', 'fill_answer_text', 'is_correct')
+                ->where('quiz_attempt_id', $attemptId)
+                ->whereIn('question_id', $questionsGroup->questions->pluck('id'))
+                ->get()
+                ->keyBy('question_id');
+
 
             return view('pages/quiz/quizAttempt', compact(
             'attemptId',
@@ -160,7 +162,6 @@ class QuizAttemptController extends Controller
 
                 // Prepare bulk operations
                 $answersToInsert = [];
-                $answersToUpdateIds = [];
                 $currentTimestamp = now();
 
                 foreach ($answers as $questionId => $answerValue) {
@@ -175,7 +176,7 @@ class QuizAttemptController extends Controller
                             Answer::where('id', $existingAnswer->id)->update([
                                 'selected_option_id' => null,
                                 'fill_answer_text' => $answerValue,
-                                'is_correct' => 0,
+                                'is_correct' => $isCorrect,
                                 'updated_at' => $currentTimestamp
                             ]);
                         } else {
@@ -197,7 +198,7 @@ class QuizAttemptController extends Controller
                                 'question_id' => $questionId,
                                 'selected_option_id' => null,
                                 'fill_answer_text' => $answerValue,
-                                'is_correct' => 0, // harusnya pakai variable $isCorrect, tapi set null dulu karena masih error
+                                'is_correct' => $isCorrect, // harusnya pakai variable $isCorrect, tapi set null dulu karena masih error
                                 'created_at' => $currentTimestamp,
                                 'updated_at' => $currentTimestamp
                             ];
@@ -254,20 +255,12 @@ class QuizAttemptController extends Controller
      */
     private function checkFillBlankCorrectness($question, $userAnswer)
     {
-        // Jika question memiliki field correct_answer
-        if (isset($question->correct_answer) && !empty($question->correct_answer)) {
-            // Case-insensitive comparison, trimmed
-            return strtolower(trim($userAnswer)) === strtolower(trim($question->correct_answer));
-        }
-
-        // Jika menggunakan options untuk menyimpan jawaban yang benar (alternatif)
-        $correctOption = $question->options()->where('is_correct', true)->first();
+        $correctOption = $question->options()->where('question_id', $question->id)->first();
         if ($correctOption) {
             return strtolower(trim($userAnswer)) === strtolower(trim($correctOption->option_text));
         }
 
-        // Jika tidak ada referensi jawaban yang benar, return null (perlu manual grading)
-        return null;
+        return false;
     }
     
     public function attemptSubmit($attemptId)
@@ -291,13 +284,11 @@ class QuizAttemptController extends Controller
             ->update([
                 'correct_count' => $correctAnswers,
                 'wrong_count' => $wrongAnswers,
-                'updated_at' => now()
+                'updated_at' => now(),
+                'completed_at' => now()
             ]);
 
-        $attempt->completed_at = now();
-        $attempt->save();
-        
-        return redirect()->route('user.quiz.index', ['quiz' => $attempt->quiz_id]);
+        return redirect()->route('home');
     }
 
     /**

@@ -12,6 +12,16 @@ class QuizController extends Controller
 {
     public function index($quizId) 
     {
+        $hasCompletedQuiz = QuizAttempt::where('quiz_id', $quizId)
+            ->where('user_id', Auth::id())
+            ->whereNotNull('completed_at')
+            ->exists();
+
+        if ($hasCompletedQuiz) {
+            return redirect()->route('home') 
+                ->with('message', 'Anda sudah menyelesaikan quiz ini sebelumnya.');
+        }
+
         $quiz = Quiz::select('id', 'title', 'description', 'duration_minutes')->find($quizId);
         session(['quiz_data' => ['duration_minutes' => $quiz->duration_minutes]]);
 

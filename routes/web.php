@@ -9,7 +9,7 @@ use App\Models\QuizAttempt;
 
 Route::get('/', function () {
     return view('home');
-});
+})->name('home');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
