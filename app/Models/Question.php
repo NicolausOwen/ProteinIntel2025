@@ -9,6 +9,7 @@ use App\Models\QuestionGroup;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Question extends Model
@@ -41,5 +42,15 @@ class Question extends Model
         return $this->belongsTo(Section::class, 'section_id');
     }
 
+    protected static function booted()
+    {
+        static::saved(function ($question) {
+            Cache::forget("question_group_full_{$question->question_group_id}");
+        });
+
+        static::deleted(function ($question) {
+            Cache::forget("question_group_full_{$question->question_group_id}");
+        });
+    }
 }
 

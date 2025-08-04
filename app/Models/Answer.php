@@ -35,4 +35,18 @@ class Answer extends Model
     {
         return $this->belongsTo(Option::class, 'selected_option_id');
     }
+    
+    protected static function booted()
+    {
+        static::saving(function ($answer) {
+            $selectedOption = Option::find($answer->selected_option_id);
+            
+            if ($selectedOption && $selectedOption->is_correct == 1) {
+                $answer->is_correct = 1;
+            } else {
+                $answer->is_correct = 0;
+            }
+        });
+    }
+
 }
