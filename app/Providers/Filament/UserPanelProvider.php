@@ -25,7 +25,6 @@ class UserPanelProvider extends PanelProvider
     {
         return $panel
             ->id('user')
-            ->login()
             ->default()
             ->path('user')
             ->colors([
@@ -43,7 +42,7 @@ class UserPanelProvider extends PanelProvider
             ->widgets([
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
-            ])  
+            ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

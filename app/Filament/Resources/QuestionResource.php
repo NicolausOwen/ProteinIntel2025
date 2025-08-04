@@ -50,15 +50,6 @@ class QuestionResource extends Resource
                         Section::make('Tempat dan Tipe Soal')
                             ->description('Input Section Soal dan Tipe Soal')
                             ->schema([
-                                Select::make('section_id')
-                                    ->label('Section (with Quiz)')
-                                    ->options(function () {
-                                        return \App\Models\Section::with('quiz')->get()->mapWithKeys(function ($section) {
-                                            return [$section->id => '[' . $section->quiz->title . '] ' . $section->name];
-                                        });
-                                    })
-                                    ->required(),
-
 
                                 // TIPE PILIHAN SOAL
                                 Radio::make('type')
@@ -181,14 +172,20 @@ class QuestionResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('group.title')->label('Group'),
+                TextColumn::make('group.title')
+                    ->label('Group'),
                 TextColumn::make('question_text')
-                    ->limit(60),
-                TextColumn::make('section.name')
-                    ->label('Section')
-                    ->sortable(),
+                    ->limit(60)
+                    ->wrap(),
                 TextColumn::make('type')
                     ->sortable(),
+                TextColumn::make('correct_answer')
+                    ->label('Correct Answer')
+                    ->state(function (Question $record): string {
+                        $correctOption = $record->options->firstWhere('is_correct', true);
+
+                        return $correctOption?->option_text ?? 'N/A';
+                    }),
                 TextColumn::make('created_at')
                     ->label('Created')
                     ->dateTime(),
