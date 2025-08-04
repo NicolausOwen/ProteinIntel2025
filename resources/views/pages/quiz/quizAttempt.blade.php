@@ -66,7 +66,20 @@
     }
 </style>
     <h3>{{ $questionsGroup->title }}</h3>
-    <h5>{{ $questionsGroup->sharde_content }}</h5>
+    @switch($questionsGroup->type)
+        @case('audio')
+            <audio controls>
+                <source src="{{ asset('storage/' . $questionsGroup->shared_content) }}" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+        @break
+        @case('image')
+            <img src="{{ asset('storage/' . $questionsGroup->shared_content) }}" alt="Image Question" style="max-width: 100%; height: auto;">
+        @break
+        @case('text')
+            <h5>text{{ $questionsGroup->shared_content }}</h5>
+        @default
+    @endswitch
 
     <div class="auto-save-status" id="autoSaveStatus"></div>
 
@@ -84,7 +97,7 @@
                             <input type="text" 
                                    name="question_{{ $question->id }}" 
                                    id="question_{{ $question->id }}"
-                                   class="form-control question-option"
+                                   class="form-control fill-blank-input"
                                    data-question-id="{{ $question->id }}"
                                    value="{{ $existingAnswers[$question->id] ?? '' }}">
                         </div>
@@ -126,6 +139,10 @@
             <span class="success-message" id="successMessage">✓ Saved</span>
             <span class="error-message" id="errorMessage">✗ Save failed</span>
         </div>
+    </form>
+    {{-- js autosubmit --}}
+    <form id="autoSubmitForm" method="POST" style="display: none;">
+        <input type="hidden" name="_token" value="{{ csrf_token() }}">
     </form>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -178,6 +195,14 @@
                     const questionId = $(this).data('question-id');
                     const optionId = $(this).val();
                     answers[questionId] = optionId;
+                });
+
+                $('.fill-blank-input').each(function() {
+                    const questionId = $(this).data('question-id');
+                    const answerText = $(this).val();
+                    if (answerText.trim() !== '') {
+                        answers[questionId] = answerText;
+                    }
                 });
 
                 // Only save if there are answers

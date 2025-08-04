@@ -12,9 +12,10 @@ class QuizController extends Controller
 {
     public function index($quizId) 
     {
-        return view('pages/quiz/quiZDetail', [
-            'quiz' => Quiz::select('id', 'title', 'description', 'duration_minutes')->find($quizId)
-        ]);
+        $quiz = Quiz::select('id', 'title', 'description', 'duration_minutes')->find($quizId);
+        session(['quiz_data' => ['duration_minutes' => $quiz->duration_minutes]]);
+
+        return view('pages/quiz/quiZDetail', compact('quiz'));
     }
     
     public function showSections($attemptId)
@@ -30,6 +31,7 @@ class QuizController extends Controller
 
         session([
             'quiz_data' => [
+                'attempt_id' => $attempt->id,
                 'id' => $attempt->quiz->id,
                 'duration_minutes' => $attempt->quiz->duration_minutes,
                 'started_at' => now(),
@@ -37,7 +39,6 @@ class QuizController extends Controller
             ]
         ]);
 
-        // user credentials validation
         if ($attempt->user_id !== Auth::id()) {
             abort(403);
         }
@@ -50,12 +51,5 @@ class QuizController extends Controller
         }
 
         return view('pages/quiz/quizSection', compact('attempt', 'sections'));
-    }
-
-    public function submit(Request $request, $quiz)
-    {
-        // Logic to handle quiz submission
-        // Validate and process the submitted answers
-        return redirect()->route('user.result.show', ['attempt' => $request->attempt_id]);
     }
 }

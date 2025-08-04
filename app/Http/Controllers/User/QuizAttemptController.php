@@ -35,7 +35,6 @@ class QuizAttemptController extends Controller
                             ->with('info', 'Anda memiliki quiz yang sedang berjalan');
         }
 
-        // Buat quiz attempt baru
         $quizAttempt = QuizAttempt::create([
             'user_id' => $userId,
             'quiz_id' => $quizId,
@@ -168,7 +167,6 @@ class QuizAttemptController extends Controller
                     $question = $questions[$questionId];
 
                     if (isset($existingAnswers[$questionId])) {
-                        // Update existing answer
                         $existingAnswer = $existingAnswers[$questionId];
 
                         if ($question->type === 'fill_blank') {
@@ -199,7 +197,7 @@ class QuizAttemptController extends Controller
                                 'question_id' => $questionId,
                                 'selected_option_id' => null,
                                 'fill_answer_text' => $answerValue,
-                                'is_correct' => 0,
+                                'is_correct' => 0, // harusnya pakai variable $isCorrect, tapi set null dulu karena masih error
                                 'created_at' => $currentTimestamp,
                                 'updated_at' => $currentTimestamp
                             ];
@@ -271,47 +269,61 @@ class QuizAttemptController extends Controller
         // Jika tidak ada referensi jawaban yang benar, return null (perlu manual grading)
         return null;
     }
-
-    /**
-     * Update attempt progress (optimized version)
-     */
-    private function updateAttemptProgress($attempt, $attemptId)
-    {
-        // OPTIMASI: Single query untuk count total questions
-        $totalQuestions = Question::whereHas('questionGroup.section', function($query) use ($attempt) {
-            $query->where('quiz_id', $attempt->quiz_id);
-        })->count();
-
-        // OPTIMASI: Single query untuk count answered questions
-        $answeredQuestions = Answer::where('attempt_id', $attemptId)->count();
-
-        // Calculate progress percentage
-        $progressPercentage = $totalQuestions > 0 ? ($answeredQuestions / $totalQuestions) * 100 : 0;
-
-        // OPTIMASI: Single update query
-        DB::table('quiz_attempts')
-            ->where('id', $attemptId)
-            ->update([
-                'percentage' => round($progressPercentage, 2),
-                'answered_questions_count' => $answeredQuestions,
-                'total_questions_count' => $totalQuestions,
-                'last_activity_at' => now(),
-                'updated_at' => now()
-            ]);
-    }
-
+    
     public function attemptSubmit($attemptId)
     {
-        $attempt = QuizAttempt::findOrFail($attemptId);
+        $attempt = QuizAttempt::select('user_id', 'quiz_id', 'completed_at')->findOrFail($attemptId);
 
-        // Validasi user
         if ($attempt->user_id !== Auth::id()) {
             abort(403);
         }
 
+        $totalQuestions = Question::whereHas('group.section', function($query) use ($attempt) {
+            $query->where('quiz_id', $attempt->quiz_id);
+        })->count();
+
+        $correctAnswers = Answer::where('quiz_attempt_id', $attemptId)->where('is_correct', 1)->count();        
+
+        $wrongAnswers = $totalQuestions - $correctAnswers;
+
+        DB::table('quiz_attempts')
+            ->where('id', $attemptId)
+            ->update([
+                'correct_count' => $correctAnswers,
+                'wrong_count' => $wrongAnswers,
+                'updated_at' => now()
+            ]);
+
         $attempt->completed_at = now();
         $attempt->save();
-
+        
         return redirect()->route('user.quiz.index', ['quiz' => $attempt->quiz_id]);
     }
+
+    /**
+     * Update attempt progress (optimized version)
+     */
+    // private function updateAttemptProgress($attempt, $attemptId)
+    // {
+    //     // OPTIMASI: Single query untuk count total questions
+    //     $totalQuestions = Question::whereHas('questionGroup.section', function($query) use ($attempt) {
+    //         $query->where('quiz_id', $attempt->quiz_id);
+    //     })->count();
+    
+    //     // OPTIMASI: Single query untuk count answered questions
+    //     $correctAnswers = Answer::where('attempt_id', $attemptId)
+    //     ->where('is_true', 1)
+    //     ->count();        
+    
+    //     // OPTIMASI: Single update query
+    //     DB::table('quiz_attempts')
+    //         ->where('id', $attemptId)
+    //         ->update([
+    //             'correct_count' => $correctAnswers,
+    //             'wrong_count' => $totalQuestions - $correctAnswers,
+    //             'total_questions_count' => $totalQuestions,
+    //             'last_activity_at' => now(),
+    //             'updated_at' => now()
+    //         ]);
+    // }
 }

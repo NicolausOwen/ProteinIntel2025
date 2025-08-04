@@ -12,8 +12,17 @@
         </h2>
         {{-- <p>{{ $section->order }}</p> --}}
     @endforeach
-    <form action="{{ route('user.attempt.submit',['attempt' => $attempt->id]) }}" method="post">
+    <form action="{{ route('user.attempt.submit',['attempt' => $attempt->id]) }}" method="post" onsubmit="clearQuizStorage()">
         @csrf
         <button name="submit">finish</button>
     </form>
 @endsection
+<script>
+    function clearQuizStorage() {
+        localStorage.removeItem('quiz_start_time');
+        localStorage.removeItem('quiz_duration');
+        localStorage.removeItem('quiz_active');
+        
+        return true; 
+    }
+</script>
