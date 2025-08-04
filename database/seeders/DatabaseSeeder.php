@@ -33,11 +33,17 @@ class DatabaseSeeder extends Seeder
 
         $adminUser->assignRole('admin');
 
-        Quiz::factory(10)->create();
-        Section::factory(10)->create();
-        QuestionGroup::factory(10)->create();
-        Question::factory(10)->create();
-        Option::factory(10)->create();
+        // Second
+        $this->call([
+            QuizSeeder::class,
+            QuestionGroupSeeder::class,
+        ]);
+
+        // Quiz::factory(10)->create();
+        // Section::factory(10)->create();
+        // QuestionGroup::factory(10)->create();
+        // Question::factory(10)->create();
+        // Option::factory(10)->create();
 
         // QuestionGroup::factory()
         //     ->count(3)

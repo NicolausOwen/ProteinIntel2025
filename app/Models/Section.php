@@ -23,4 +23,10 @@ class Section extends Model
     {
         return $this->hasMany(Question::class);
     }
+
+    public function groups()
+    {
+        return $this->hasMany(QuestionGroup::class, 'section_id');
+    }
+
 }

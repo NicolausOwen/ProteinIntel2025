@@ -56,22 +56,21 @@ class QuestionResource extends Resource
                                     ->label('Question Type')
                                     ->options([
                                         'multiple_choice' => 'Multiple Choice',
-                                        'true_false' => 'True / False',
-                                        'structure' => 'Structure (Fill-In)',
+                                        'fill_blank' => 'Structure (Fill-In)',
                                     ])
                                     ->reactive()
                                     ->afterStateUpdated(function ($state, \Filament\Forms\Set $set) {
-                                        if ($state === 'true_false') {
-                                            $set('options', [
-                                                ['option_text' => 'True', 'is_correct' => false],
-                                                ['option_text' => 'False', 'is_correct' => false],
-                                            ]);
-                                        } elseif ($state === 'structure') {
+                                        if ($state === 'fill_blank') {
                                             $set('options', [
                                                 ['option_text' => '', 'is_correct' => true],
                                             ]);
                                         } else {
-                                            $set('options', []); // reset for multiple_choice
+                                            $set('options', [
+                                                ['option_text' => 'A.', 'is_correct' => false],
+                                                ['option_text' => 'B.', 'is_correct' => false],
+                                                ['option_text' => 'C.', 'is_correct' => false],
+                                                ['option_text' => 'D.', 'is_correct' => false],
+                                            ]); // reset for multiple_choice
                                         }
                                     })
                                     ->required(),
@@ -107,20 +106,32 @@ class QuestionResource extends Resource
                         // Opsi Soal Untuk Structure
                         Placeholder::make('correct_answer_note')
                             ->content('Correct Answer will be matched directly to this input.')
-                            ->visible(fn(callable $get) => $get('type') === 'structure')
+                            ->visible(fn(callable $get) => $get('type') === 'fill_blank')
                             ->columnSpanFull(),
 
                         // Opsi Soal Untuk Structure
+                        FileUpload::make('foto_url')
+                            ->label('Structure img')
+                            ->disk('public') // simpan ke storage/app
+                            ->directory('img') // path: storage/app/img
+                            ->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png'])
+                            ->maxSize(5120)
+                            ->visible(fn(callable $get) => $get('type') === 'fill_blank')
+                            ->helperText('Upload file audio soal Listening (hanya untuk tipe soal True/False).')
+                            ->nullable(),
+
+                        // Opsi Soal Untuk Listening
                         FileUpload::make('audio_url')
-                            ->label('Listening Audio')
-                            ->disk('local') // simpan ke storage/app
+                            ->label('Listening audio')
+                            ->disk('public') // simpan ke storage/app
                             ->directory('audio') // path: storage/app/audio
                             ->acceptedFileTypes(['audio/mpeg', 'audio/mp3', 'audio/wav'])
                             ->maxSize(5120)
-                            ->visible(fn(callable $get) => $get('type') === 'true_false')
-                            ->helperText('Upload file audio soal Listening (hanya untuk tipe soal True/False).'),
+                            ->visible(fn(callable $get) => $get('type') === 'multiple_choice')
+                            ->helperText('Upload file audio soal Listening (Jika Reading Biarkan Kosong).')
+                            ->nullable(),
 
-                        // Opsi Soal untuk Multiple dan True/False
+                        // Opsi Soal
                         Repeater::make('options')
                             ->label('Answer Options')
                             ->relationship()
@@ -137,32 +148,31 @@ class QuestionResource extends Resource
                                         ->helperText('Tandai jika ini adalah jawaban yang benar. Untuk isian/structure, hanya satu isian.'),
                                 ]),
                             ])
-                            ->visible(fn(callable $get) => in_array($get('type'), ['multiple_choice', 'true_false', 'structure']))
+                            ->visible(fn(callable $get) => in_array($get('type'), ['multiple_choice', 'true_false', 'fill_blank']))
                             ->default(fn(callable $get) => match ($get('type')) {
-                                'multiple_choice' => array_fill(0, 5, ['option_text' => '', 'is_correct' => false]),
-                                'true_false' => [
-                                    ['option_text' => 'True', 'is_correct' => false],
-                                    ['option_text' => 'False', 'is_correct' => false],
+                                'multiple_choice' => [
+                                    ['option_text' => 'A.', 'is_correct' => false],
+                                    ['option_text' => 'B.', 'is_correct' => false],
+                                    ['option_text' => 'C.', 'is_correct' => false],
+                                    ['option_text' => 'D.', 'is_correct' => false],
                                 ],
-                                'structure' => [
+                                'fill_blank' => [
                                     ['option_text' => '', 'is_correct' => true],
                                 ],
                                 default => [],
                             })
                             ->minItems(fn(callable $get) => match ($get('type')) {
-                                'multiple_choice' => 5,
-                                'true_false' => 2,
-                                'structure' => 1,
+                                'multiple_choice' => 4,
+                                'fill_blank' => 1,
                                 default => 0
                             })
                             ->maxItems(fn(callable $get) => match ($get('type')) {
-                                'multiple_choice' => 5,
-                                'true_false' => 2,
-                                'structure' => 1,
+                                'multiple_choice' => 4,
+                                'fill_blank' => 1,
                                 default => 0
                             })
-                            ->disableItemCreation(fn(callable $get) => in_array($get('type'), ['true_false', 'structure']))
-                            ->disableItemDeletion(fn(callable $get) => in_array($get('type'), ['true_false', 'structure']))
+                            ->disableItemCreation(fn(callable $get) => in_array($get('type'), ['fill_blank']))
+                            ->disableItemDeletion(fn(callable $get) => in_array($get('type'), ['fill_blank']))
                             ->columnSpanFull()
                     ]),
             ]);

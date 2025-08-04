@@ -20,6 +20,7 @@ class Question extends Model
         'question_group_id',
         'type',
         'question_text',
+        'foto_url',
         'audio_url',
         'explanation'
     ];
