@@ -5,7 +5,6 @@
     <h3>{{ $attempt->quiz->description }}</h3>
     @foreach ($sections as $section )
         <h2> 
-            {{-- rombak route agar user diarahkan ke question group --}}
             <a href="{{ route('user.attempt.questions', ['attempt' => $attempt->id, 'section' => $section->id]) }}">
                 section :{{ $section->name }}
             </a>
