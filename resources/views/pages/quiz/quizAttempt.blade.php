@@ -67,7 +67,7 @@
 </style>
     <h3>{{ $questionsGroup->title }}</h3>
     @switch($questionsGroup->type)
-        @case('audio')
+        {{-- @case('audio')
             <audio controls>
                 <source src="{{ asset('storage/' . $questionsGroup->shared_content) }}" type="audio/mpeg">
                 Your browser does not support the audio element.
@@ -75,7 +75,7 @@
         @break
         @case('image')
             <img src="{{ asset('storage/' . $questionsGroup->shared_content) }}" alt="Image Question" style="max-width: 100%; height: auto;">
-        @break
+        @break --}}
         @case('text')
             <h5>text{{ $questionsGroup->shared_content }}</h5>
         @default
@@ -86,11 +86,21 @@
     <form id="quizForm">
         <div class="question-group">
             @foreach ($questionsGroup->questions as $question)
+            {{ $question->audio_url }}
+            {{ $question->foto_url }}
                 <div>
+                    @if ($question->foto_url == null)
+                        <audio controls>
+                            <source src="{{ asset('storage/audio/' . $question->audio_url) }}" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                        </audio>   
+                    @else 
+                        <img src="{{ asset('storage/img/' . $question->foto_url) }}" alt="Image Question" style="max-width: 75%; height: auto;">
+                    @endif
                     <h5>Question : {{ $question->question_text }}</h5>
                     <h5>Explanation : {{ $question->explanation }}</h5>
                 </div>
-                @switch($question->type)
+                {{-- @switch($question->type)
                     @case('fill_blank')
                         <div class="form-group">
                             <label for="question_{{ $question->id }}">Your Answer:</label>
@@ -101,9 +111,8 @@
                                    data-question-id="{{ $question->id }}"
                                    value="{{ $existingAnswers[$question->id]->fill_answer_text ?? '' }}">
                         </div>
-                    @break
-                    {{-- multiple choice and true_false --}}
-                    @default
+                    @break --}}
+                    {{-- @default --}}
                         @foreach ($question->options as $option)
                             <div>
                                 <input type="radio" 
@@ -116,27 +125,30 @@
                                 <label for="option-{{ $option->id }}">{{ $option->option_text }}</label>
                             </div>
                         @endforeach
-                @endswitch
+                {{-- @endswitch --}}
                 <hr>
             @endforeach
         </div>
 
         <div class="navigation-buttons">
-            @if($prevGroupId)
+            @if ( $questionsGroup->type == 'text')
+                @if($prevGroupId)
                 <a href="{{ route('user.attempt.questions', ['attempt' => $attemptId, 'section' => $sectionId, 'questionGroupId' => $prevGroupId]) }}" 
-                   class="btn btn-secondary">Previous</a>
-            @endif
-                    
-            @if($nextGroupId)
-                <a href="{{ route('user.attempt.questions', ['attempt' => $attemptId, 'section' => $sectionId, 'questionGroupId' => $nextGroupId]) }}" 
-                   class="btn btn-primary" id="nextButton">Next</a>
+                       class="btn btn-secondary">Previous</a>
+                @endif
+                @if($nextGroupId)
+                    <a href="{{ route('user.attempt.questions', ['attempt' => $attemptId, 'section' => $sectionId, 'questionGroupId' => $nextGroupId]) }}" 
+                        class="btn btn-primary" id="nextButton">Next</a>
+                @else
+                <a href="{{ route('user.quiz.sections', ['attempt' => $attemptId]) }}" 
+                    class="btn btn-primary" id="finishButton">Finish</a>
+                @endif
             @else
                 <a href="{{ route('user.quiz.sections', ['attempt' => $attemptId]) }}" 
-                   class="btn btn-primary" id="finishButton">Finish</a>
+                class="btn btn-primary" id="finishButton">Finish</a>
             @endif
-
-            <span class="loading" id="loadingIndicator">Saving...</span>
-            <span class="success-message" id="successMessage">✓ Saved</span>
+                    <span class="loading" id="loadingIndicator">Saving...</span>
+                    <span class="success-message" id="successMessage">✓ Saved</span>
             <span class="error-message" id="errorMessage">✗ Save failed</span>
         </div>
     </form>

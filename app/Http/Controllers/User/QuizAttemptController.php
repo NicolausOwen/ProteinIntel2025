@@ -90,7 +90,7 @@ class QuizAttemptController extends Controller
         $questionsGroup = Cache::remember($questionGroupCacheKey, 1800, function() use ($questionGroupId) {
             return QuestionGroup::with([
                 'questions' => function ($query) {
-                    $query->select('id', 'question_text', 'explanation', 'question_group_id', 'type');
+                    $query->select('id', 'question_group_id', 'type', 'question_text', 'foto_url', 'audio_url', 'explanation');
                 },
                 'questions.options' => function ($query) {
                     $query->select('id', 'option_text', 'is_correct', 'question_id');
