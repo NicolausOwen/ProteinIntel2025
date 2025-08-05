@@ -33,10 +33,10 @@ Route::prefix('user')->middleware(['auth', 'role:user'])->group(function () {
     // Route::get('/dashboard', [UserDashboardController::class, 'index'])->name('user.dashboard');
     // Route::get('/quizzes', [QuizController::class, 'index'])->name('user.quizzes'); 
 
-    Route::get('/quizzes/{quiz}/start', [QuizController::class, 'index'])->name('user.quiz.index'); 
+    Route::get('/quizzes/{quiz}/start', [QuizController::class, 'index'])->name('user.quiz.index');
     Route::post('/quizzes/{quiz}/start', [QuizAttemptController::class, 'start'])->name('user.attempt.start');
-    
-    Route::get('/attempt/{attempt}/section', [QuizController::class, 'showSections'])->name('user.quiz.sections'); 
+
+    Route::get('/attempt/{attempt}/section', [QuizController::class, 'showSections'])->name('user.quiz.sections');
     Route::get('/attempt/{attempt}/section/{section}/page/{questionGroupId?}', [QuizAttemptController::class, 'showQuestion'])->name('user.attempt.questions');
     // Route::post('/attempt/{attempt}/saveAnswer', [QuizAttemptController::class, 'saveAnswer'])->name('user.attempt.save.answer'); // submit answer for a question
 

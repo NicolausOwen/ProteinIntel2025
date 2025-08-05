@@ -12,15 +12,24 @@
                 <p class="text-gray-600 dark:text-gray-300">{{ $quiz->description }}</p>
                 <p class="text-sm text-gray-500 dark:text-gray-400">Duration: {{ $quiz->duration_minutes }} minutes</p>
 
-                <div class="mt-2">
-                    <x-filament::button 
-                        tag="a" 
-                        color="primary" 
-                        :href="route('user.quiz.index', $quiz->id)"
-                    >
-                        Start Quiz
-                    </x-filament::button>
-                </div>
+                @foreach ($quizzes as $quiz)
+                    @php
+                        $attempt = $attempts->firstWhere('quiz_id', $quiz->id);
+                    @endphp
+
+                    <div class="mt-2">
+
+                        <x-filament::button 
+                            tag="a" 
+                            color="primary"
+                            :href="$attempt 
+                                ? route('user.quiz.sections', $attempt->id) 
+                                : route('user.quiz.index', $quiz->id)"
+                        >
+                            {{ $attempt ? 'Continue Quiz' : 'Start Quiz' }}
+                        </x-filament::button>
+                    </div>
+                @endforeach
             </div>
         @endforeach
     @endif
