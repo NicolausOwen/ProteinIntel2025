@@ -121,7 +121,9 @@
                                 id="option-{{ $option->id }}"
                                 data-question-id="{{ $question->id }}"
                                 class="question-option"
-                                @if(isset($existingAnswers[$question->id]) && $existingAnswers[$question->id]->selected_option_id == $option->id) checked @endif>
+                                {{-- kalau jadi pakai soal tipe isian --}}
+                                {{-- @if(isset($existingAnswers[$question->id]) && $existingAnswers[$question->id]->selected_option_id == $option->id) checked @endif> --}}
+                                @if(isset($existingAnswers[$question->id]) && $existingAnswers[$question->id] == $option->id) checked @endif>
                                 <label for="option-{{ $option->id }}">{{ $option->option_text }}</label>
                             </div>
                         @endforeach
