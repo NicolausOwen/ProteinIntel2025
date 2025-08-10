@@ -1,70 +1,76 @@
-@extends('pages.quiz.layouts.main')
+@extends('layouts.quiz')
+
+@section('title', 'About-us')
+
+@push('styles')
+    <style>
+        .loading {
+            display: none;
+            color: #007bff;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+        .success-message {
+            color: #28a745;
+            font-size: 14px;
+            margin-left: 10px;
+            display: none;
+        }
+        .error-message {
+            color: #dc3545;
+            font-size: 14px;
+            margin-left: 10px;
+            display: none;
+        }
+        .question-group {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .navigation-buttons {
+            margin-top: 20px;
+            padding: 15px 0;
+        }
+        .btn {
+            padding: 8px 16px;
+            margin: 0 5px;
+            text-decoration: none;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+            border: none;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+        }
+        .auto-save-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+        .auto-save-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .auto-save-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+@endpush
+
 @section('container')
-<style>
-    .loading {
-        display: none;
-        color: #007bff;
-        font-size: 14px;
-        margin-left: 10px;
-    }
-    .success-message {
-        color: #28a745;
-        font-size: 14px;
-        margin-left: 10px;
-        display: none;
-    }
-    .error-message {
-        color: #dc3545;
-        font-size: 14px;
-        margin-left: 10px;
-        display: none;
-    }
-    .question-group {
-        margin-bottom: 20px;
-        padding: 15px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-    }
-    .navigation-buttons {
-        margin-top: 20px;
-        padding: 15px 0;
-    }
-    .btn {
-        padding: 8px 16px;
-        margin: 0 5px;
-        text-decoration: none;
-        border-radius: 4px;
-        display: inline-block;
-    }
-    .btn-primary {
-        background-color: #007bff;
-        color: white;
-        border: none;
-    }
-    .btn-secondary {
-        background-color: #6c757d;
-        color: white;
-        border: none;
-    }
-    .auto-save-status {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 10px;
-        border-radius: 4px;
-        display: none;
-    }
-    .auto-save-success {
-        background-color: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
-    }
-    .auto-save-error {
-        background-color: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-    }
-</style>
     <h3>{{ $questionsGroup->title }}</h3>
     @switch($questionsGroup->type)
         {{-- @case('audio')
@@ -91,11 +97,11 @@
                 <div>
                     @if ($question->foto_url == null)
                         <audio controls>
-                            <source src="{{ asset('storage/audio/' . $question->audio_url) }}" type="audio/mpeg">
+                            <source src="{{ asset('storage/' . $question->audio_url) }}" type="audio/mpeg">
                             Your browser does not support the audio element.
                         </audio>   
                     @else 
-                        <img src="{{ asset('storage/img/' . $question->foto_url) }}" alt="Image Question" style="max-width: 75%; height: auto;">
+                        <img src="{{ asset('storage/' . $question->foto_url) }}" alt="Image Question" style="max-width: 75%; height: auto;">
                     @endif
                     <h5>Question : {{ $question->question_text }}</h5>
                     <h5>Explanation : {{ $question->explanation }}</h5>
@@ -158,7 +164,9 @@
     <form id="autoSubmitForm" method="POST" style="display: none;">
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
     </form>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+@endsection
+
+@push('scripts')
     <script>
         $(document).ready(function() {
             // Set up CSRF token for AJAX requests
@@ -290,4 +298,4 @@
             }
         });
     </script>
-@endsection
+    @endpush

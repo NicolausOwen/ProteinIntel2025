@@ -14,6 +14,17 @@ export default {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+            keyframes: {
+                lava: {
+                '0%, 100%': { transform: 'translate(0, 0) scale(1)' },
+                '50%': { transform: 'translate(50px, -30px) scale(1.2)' },
+                },
+            },
+            animation: {
+                lava: 'lava 12s ease-in-out infinite',
+                'lava-slow': 'lava 20s ease-in-out infinite',
+                'lava-fast': 'lava 8s ease-in-out infinite',
+            },
         },
     },
 
