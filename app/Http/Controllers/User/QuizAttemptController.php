@@ -105,7 +105,7 @@ class QuizAttemptController extends Controller
             ->get()
             ->keyBy('question_id');
 
-        // matikan ini jika ada tipe soal fill_blank
+        // tidak ada fillblank
         // $existingAnswers = Answer::where('quiz_attempt_id', $attemptId)
         //     ->whereIn('question_id', $questionsGroup->questions->pluck('id'))
         //     ->pluck('selected_option_id', 'question_id')
