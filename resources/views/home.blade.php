@@ -31,20 +31,15 @@
         <!-- Main Content -->
         <div class="relative z-10 text-center px-4 max-w-6xl mx-auto">
             <!-- Main Title -->
-            <h1 class="text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-black mb-4 leading-none">
+            <h1 class="text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-black mb-4 leading-none font-title">
                 <span class="bg-gradient-to-r from-white via-gray-100 to-gray-200 bg-clip-text text-transparent">PROTEIN</span>
-                <span class="text-gray-100 ml-4">2025</span>
+                <span class="text-gray-100 ml-2 text-[170px]">2025</span>
             </h1>
             
             <!-- Subtitle -->
-            <p class="text-gray-200 text-lg md:text-xl lg:text-2xl font-light mb-8 max-w-4xl mx-auto leading-relaxed">
-                Speak The World: Empowering Global Citizens Through English 2025
+            <p class="text-gray-200 text-lg md:text-xl lg:text-2xl font-light mb-8 max-w-4xl mx-auto leading-relaxed font-title">
+                <span class="text-2xl lg:text-3xl font-extrabold mb-4 bg-gradient-to-r from-slate-800 via-slate-700 to-slate-900 bg-clip-text text-transparent drop-shadow-sm"> Speak The World</span> : Empowering Global Citizens Through English 2025
             </p>
-            
-            <!-- Date Badge -->
-            <div class="inline-block bg-gray-900/90 backdrop-blur-sm rounded-full px-8 py-3 mb-12 border border-gray-600">
-                <span class="text-white font-medium text-lg">23rd August 2025</span>
-            </div>
             
             <!-- Social Media Icons -->
             <div class="bg-gray-800/80 backdrop-blur-sm border border-gray-600 inline-flex items-center space-x-6 rounded-full px-8 py-4">
@@ -82,16 +77,18 @@
             </div>
         </div>
 
-                
+        {{-- <div class="container mx-auto px-4 text-center">
+            <img src="" alt="">
+        </div> --}}
     </section>
 
     <!-- Getting Started Section -->
-    <section class="w-full h-[100vh] lg:h-[70vh] bg-white flex items-center justify-center">
+    <section class="w-full lg:h-[70vh] h-[100vh] bg-gray-50 flex items-center justify-center">
         <div class="relative flex flex-col lg:flex-row items-center justify-center gap-8 w-full max-w-6xl px-6 lg:px-10">
 
-            <div class="hidden lg:flex absolute inset-0 z-1 w-screen">
+            <div class="hidden lg:flex absolute inset-[-30px] z-1 w-screen h-[120%]">
                 <div class="w-1/5 "></div>
-                <div class="w-4/5 bg-gradient-to-r from-[#B8CFCE] to-[#7F8CAA]"></div>
+                <div class="w-[90%] bg-gradient-to-r from-[#B8CFCE] to-[#7F8CAA]"></div>
             </div>
 
             <!-- Left Side Image -->
@@ -112,133 +109,89 @@
                     Develop your English skills, Ace the USEPT, and Step further into a bright future.
                 </p>
                 <div class="flex justify-center lg:justify-start">
-                    <button
-                        class="bg-gradient-to-r from-[#585a7d] to-[#333446] text-white font-semibold py-3 px-8 rounded-full shadow-2xl hover:shadow-3xl hover:from-[#333446] hover:to-[#585a7d] transition-all duration-300 transform hover:scale-105 backdrop-blur-sm border border-white/10">
+                    <a
+                        href="take-a-quiz"
+                        class="bg-gray-800 hover:bg-gray-700 text-white font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 border-white/10">
                         START NOW
-                    </button>
+                    </a>
                 </div>
             </div>
-
         </div>
     </section>
 
-    <!-- PARALLAX CARD -->
-    <div class="relative inset-x-0 h-[120vh] -mt-[20vh] pointer-events-none -z-10">
-        <div class="sticky top-1/2 -translate-y-1/2 flex justify-center">
-            <div class="max-w-3xl bg-white/80 backdrop-blur-md p-8 rounded-2xl shadow-xl border border-white/20">
-                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 text-center mb-4">
-                    What is <span class="text-[#7F8CAA]">PROTEIN</span>?
-                </h2>
-                <div class="prose prose-slate max-w-none">
-                    <p>
-                    <img src="{{ asset('img/home/gambar.jpg') }}" alt="Protein Image"
-                        class="float-left mr-4 mb-2 w-40 h-40 object-cover rounded-full shadow-lg border border-slate-200"
-                        style="shape-outside: circle(50%); clip-path: circle(50%);">
-                    PROTEIN is a comprehensive program designed to help students sharpen their English
-                    proficiency, prepare for the USEPT, and open doors to academic and professional
-                    opportunities. Our curriculum blends interactive learning with proven strategies, ensuring
-                    every participant gains the confidence and skills needed to excel.
+    <!-- What is PROTEIN Section -->
+    <section class="bg-gray-50 py-16">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-3xl lg:text-4xl font-bold text-gray-800 mb-8 font-title">
+                What is PROTEIN?
+            </h2>
+            <div class="max-w-4xl mx-auto">
+                <p class="text-lg text-gray-700 mb-12 leading-relaxed">
+                    PROTEIN is TOEFL/USEPT test simulation for Sriwijaya University Students, where students can practice solving 
+                    TOEFL like problems. This activity is to introduce Unsri students, especially at the Faculty of Computer 
+                    Science with USEPT test problems and also help students to improve their ability to answer questions.
+                </p>
+
+                <!-- Learn More Button -->
+                <a href="about-us"
+                    class="inline-block bg-gray-800 hover:bg-gray-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300">
+                    Learn More
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Take PROTEIN Section -->
+    <section class="bg-gray-100 py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl lg:text-4xl font-bold text-gray-800 text-center mb-12 font-title">
+                Why Take PROTEIN?
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                <!-- Card 1 -->
+                <div class="bg-sage-100 p-8 rounded-lg shadow-md">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center">Tingkatkan Kemampuan Bahasa Inggris</h3>
+                    <p class="text-gray-700 text-center leading-relaxed">
+                        PROTEIN membantu mahasiswa memperkuat kemampuan bahasa Inggris melalui simulasi tes TOEFL/SULIET 
+                        yang mencakup Structure, Reading, dan Listening. Kegiatan ini dirancang untuk mempersiapkan diri menghadapi 
+                        tes resmi dengan strategi dan materi yang relevan.
+                    </p>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="bg-sage-200 p-8 rounded-lg shadow-md">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center">Persiapan Studi & Karier Global</h3>
+                    <p class="text-gray-700 text-center leading-relaxed">
+                        Dengan hasil tes yang diakui secara internasional, mahasiswa dapat membuka peluang lebih luas untuk melanjutkan 
+                        studi, mendapatkan beasiswa, dan mengembangkan karier di lingkungan global.
+                    </p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-sage-200 p-8 rounded-lg shadow-md">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center">Seminar Strategi Sukses TOEFL</h3>
+                    <p class="text-gray-700 text-center leading-relaxed">
+                        Sebelum tes, peserta mengikuti seminar interaktif yang membahas peran bahasa Inggris, tips mengerjakan soal, 
+                        strategi menjawab, hingga motivasi menjadi global citizen.
+                    </p>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="bg-sage-100 p-8 rounded-lg shadow-md">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4 text-center">Gratis & Sertifikat Resmi</h3>
+                    <p class="text-gray-700 text-center leading-relaxed">
+                        PROTEIN 2025 tidak memungut biaya pendaftaran. Peserta yang menyelesaikan tes akan memperoleh 
+                        e-certificate sebagai bukti kemampuan bahasa Inggris yang dapat digunakan untuk keperluan akademik maupun profesional.
                     </p>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+
 
     <!-- FAQ Section -->
-    <section class="py-16 bg-gradient-to-br from-gray-50 to-white px-6 relative overflow-hidden">
-        <!-- Background decoration -->
-        <div class="absolute inset-0 opacity-10">
-            <div class="absolute top-20 left-10 w-20 h-20 bg-[#B8CFCE] rounded-full blur-xl animate-pulse"></div>
-            <div class="absolute bottom-32 right-16 w-16 h-16 bg-[#7F8CAA] rounded-full blur-xl animate-pulse delay-1000"></div>
-            <div class="absolute top-1/2 left-1/4 w-12 h-12 bg-[#8794ba] rounded-full blur-xl animate-pulse delay-500"></div>
-        </div>
-        
-        <div class="max-w-4xl mx-auto relative z-10">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-[#7F8CAA] via-[#8794ba] to-[#B8CFCE] bg-clip-text text-transparent animate-gradient">
-                    Why Take PROTEIN? - FAQ
-                </h2>
-                <div class="w-24 h-1 bg-gradient-to-r from-[#7F8CAA] to-[#B8CFCE] mx-auto rounded-full"></div>
-            </div>
-            
-            <div class="space-y-6">
-                <!-- FAQ Item 1 -->
-                <div class="group bg-white/80 backdrop-blur-lg rounded-2xl border border-[#B8CFCE]/30 overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.02]">
-                    <button class="w-full px-8 py-6 text-left flex justify-between items-center hover:bg-gradient-to-r hover:from-[#EAEFEF]/50 hover:to-transparent transition-all duration-300" onclick="toggleFAQ(1)">
-                        <h3 class="text-xl font-bold text-[#7F8CAA] group-hover:text-[#8794ba] transition-colors duration-300">What makes PROTEIN's practice materials comprehensive?</h3>
-                        <div class="relative w-8 h-8 flex items-center justify-center">
-                            <span class="absolute text-2xl font-bold text-[#7F8CAA] transform transition-all duration-500 ease-in-out" id="icon-1">+</span>
-                        </div>
-                    </button>
-                    <div class="px-8 pb-6 opacity-0 max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-1">
-                        <div class="pt-4 border-t border-[#B8CFCE]/20">
-                            <p class="text-gray-700 leading-relaxed text-lg">PROTEIN offers a wide range of TOEFL-style questions and practice materials specifically designed for Sriwijaya University students. Our comprehensive approach covers all sections of the USEPT exam, ensuring you're well-prepared for every aspect of the test.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- FAQ Item 2 -->
-                <div class="group bg-white/80 backdrop-blur-lg rounded-2xl border border-[#B8CFCE]/30 overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.02]">
-                    <button class="w-full px-8 py-6 text-left flex justify-between items-center hover:bg-gradient-to-r hover:from-[#EAEFEF]/50 hover:to-transparent transition-all duration-300" onclick="toggleFAQ(2)">
-                        <h3 class="text-xl font-bold text-[#7F8CAA] group-hover:text-[#8794ba] transition-colors duration-300">How does PROTEIN enhance my English skills?</h3>
-                        <div class="relative w-8 h-8 flex items-center justify-center">
-                            <span class="absolute text-2xl font-bold text-[#7F8CAA] transform transition-all duration-500 ease-in-out" id="icon-2">+</span>
-                        </div>
-                    </button>
-                    <div class="px-8 pb-6 opacity-0 max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-2">
-                        <div class="pt-4 border-t border-[#B8CFCE]/20">
-                            <p class="text-gray-700 leading-relaxed text-lg">PROTEIN improves your English proficiency through targeted exercises that focus on reading comprehension, listening skills, and language structure components. Our practice sessions are designed to strengthen your weak areas and build confidence in all aspects of English proficiency testing.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- FAQ Item 3 -->
-                <div class="group bg-white/80 backdrop-blur-lg rounded-2xl border border-[#B8CFCE]/30 overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.02]">
-                    <button class="w-full px-8 py-6 text-left flex justify-between items-center hover:bg-gradient-to-r hover:from-[#EAEFEF]/50 hover:to-transparent transition-all duration-300" onclick="toggleFAQ(3)">
-                        <h3 class="text-xl font-bold text-[#7F8CAA] group-hover:text-[#8794ba] transition-colors duration-300">What future opportunities can PROTEIN help me achieve?</h3>
-                        <div class="relative w-8 h-8 flex items-center justify-center">
-                            <span class="absolute text-2xl font-bold text-[#7F8CAA] transform transition-all duration-500 ease-in-out" id="icon-3">+</span>
-                        </div>
-                    </button>
-                    <div class="px-8 pb-6 opacity-0 max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-3">
-                        <div class="pt-4 border-t border-[#B8CFCE]/20">
-                            <p class="text-gray-700 leading-relaxed text-lg">By mastering English proficiency tests through PROTEIN, you open doors to global opportunities including international scholarships, study abroad programs, multinational job opportunities, and professional certifications that require English proficiency. This paves the way for both academic and professional success worldwide.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- FAQ Item 4 -->
-                <div class="group bg-white/80 backdrop-blur-lg rounded-2xl border border-[#B8CFCE]/30 overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.02]">
-                    <button class="w-full px-8 py-6 text-left flex justify-between items-center hover:bg-gradient-to-r hover:from-[#EAEFEF]/50 hover:to-transparent transition-all duration-300" onclick="toggleFAQ(4)">
-                        <h3 class="text-xl font-bold text-[#7F8CAA] group-hover:text-[#8794ba] transition-colors duration-300">How does PROTEIN prepare me specifically for USEPT?</h3>
-                        <div class="relative w-8 h-8 flex items-center justify-center">
-                            <span class="absolute text-2xl font-bold text-[#7F8CAA] transform transition-all duration-500 ease-in-out" id="icon-4">+</span>
-                        </div>
-                    </button>
-                    <div class="px-8 pb-6 opacity-0 max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-4">
-                        <div class="pt-4 border-t border-[#B8CFCE]/20">
-                            <p class="text-gray-700 leading-relaxed text-lg">PROTEIN is specifically tailored for Sriwijaya University students preparing for USEPT. Our simulation tests mirror the actual USEPT format and difficulty level, giving you familiarity with the test structure, timing, and question types you'll encounter on the actual exam day.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- FAQ Item 5 -->
-                <div class="group bg-white/80 backdrop-blur-lg rounded-2xl border border-[#B8CFCE]/30 overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-[1.02]">
-                    <button class="w-full px-8 py-6 text-left flex justify-between items-center hover:bg-gradient-to-r hover:from-[#EAEFEF]/50 hover:to-transparent transition-all duration-300" onclick="toggleFAQ(5)">
-                        <h3 class="text-xl font-bold text-[#7F8CAA] group-hover:text-[#8794ba] transition-colors duration-300">What support does PROTEIN provide during practice sessions?</h3>
-                        <div class="relative w-8 h-8 flex items-center justify-center">
-                            <span class="absolute text-2xl font-bold text-[#7F8CAA] transform transition-all duration-500 ease-in-out" id="icon-5">+</span>
-                        </div>
-                    </button>
-                    <div class="px-8 pb-6 opacity-0 max-h-0 overflow-hidden transition-all duration-500 ease-in-out" id="content-5">
-                        <div class="pt-4 border-t border-[#B8CFCE]/20">
-                            <p class="text-gray-700 leading-relaxed text-lg">PROTEIN provides detailed explanations for each practice question, performance analytics to track your progress, and personalized recommendations for improvement. Our support system helps you identify strengths and weaknesses, allowing you to focus your study efforts more effectively.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    @include('components.protein-faq')
 @endsection
 
 @push('scripts')

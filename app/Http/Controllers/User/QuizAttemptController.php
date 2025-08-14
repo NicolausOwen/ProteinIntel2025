@@ -26,13 +26,13 @@ class QuizAttemptController extends Controller
 
         // cek apakah user sudah memiliki quiz attempt yang belum selesai
         $existingAttempt = QuizAttempt::where('user_id', $userId)
-                                     ->where('quiz_id', $quizId)
-                                     ->whereNull('completed_at')
-                                     ->first();
+            ->where('quiz_id', $quizId)
+            ->whereNull('completed_at')
+            ->first();
 
         if ($existingAttempt) {
             return redirect()->route('user.attempt.start', ['attempt' => $existingAttempt->id])
-                            ->with('info', 'Anda memiliki quiz yang sedang berjalan');
+                ->with('info', 'Anda memiliki quiz yang sedang berjalan');
         }
 
         $quizAttempt = QuizAttempt::create([
@@ -45,7 +45,7 @@ class QuizAttemptController extends Controller
             'wrong_count' => 0,
             'percentage' => 0.00,
         ]);
-        
+
         return redirect()->route('user.quiz.sections', [
             'attempt' => $quizAttempt->id
         ]);
@@ -56,7 +56,7 @@ class QuizAttemptController extends Controller
         // Cache key untuk user attempt validation
         $userAttemptCacheKey = "quiz_attempt_user_{$attemptId}";
 
-        $userAttemptId = Cache::remember($userAttemptCacheKey, 3600, function() use ($attemptId) {
+        $userAttemptId = Cache::remember($userAttemptCacheKey, 3600, function () use ($attemptId) {
             return QuizAttempt::where('id', $attemptId)->value('user_id');
         });
 
@@ -67,7 +67,7 @@ class QuizAttemptController extends Controller
         // Cache untuk group IDs di section yang sama
         $groupIdsCacheKey = "section_group_ids_{$sectionId}";
 
-        $groupIds = Cache::remember($groupIdsCacheKey, 1800, function() use ($sectionId) {
+        $groupIds = Cache::remember($groupIdsCacheKey, 1800, function () use ($sectionId) {
             return QuestionGroup::where('section_id', $sectionId)
                 ->orderBy('id')
                 ->pluck('id')
@@ -80,14 +80,14 @@ class QuizAttemptController extends Controller
 
         $currentIndex = array_search($questionGroupId, $groupIds);
 
-        
+
         $nextGroupId = $groupIds[$currentIndex + 1] ?? null;
         $prevGroupId = $groupIds[$currentIndex - 1] ?? null;
-        
+
         // Cache untuk question group dengan semua relasi
         $questionGroupCacheKey = "question_group_full_{$questionGroupId}";
-        
-        $questionsGroup = Cache::remember($questionGroupCacheKey, 1800, function() use ($questionGroupId) {
+
+        $questionsGroup = Cache::remember($questionGroupCacheKey, 1800, function () use ($questionGroupId) {
             return QuestionGroup::with([
                 'questions' => function ($query) {
                     $query->select('id', 'question_group_id', 'type', 'question_text', 'foto_url', 'audio_url', 'explanation');
@@ -95,23 +95,23 @@ class QuizAttemptController extends Controller
                 'questions.options' => function ($query) {
                     $query->select('id', 'option_text', 'is_correct', 'question_id');
                 }
-                ])->findOrFail($questionGroupId);
-            });
-      
-            // kalau jadi pakai soal tipe isian kosong (fill_blank)
-            // $existingAnswers = Answer::select('id', 'question_id', 'selected_option_id', 'is_correct')
-            //     ->where('quiz_attempt_id', $attemptId)
-            //     ->whereIn('question_id', $questionsGroup->questions->pluck('id'))
-            //     ->get()
-            //     ->keyBy('question_id');
+            ])->findOrFail($questionGroupId);
+        });
 
-                $existingAnswers = Answer::where('quiz_attempt_id', $attemptId)
-                    ->whereIn('question_id', $questionsGroup->questions->pluck('id'))
-                    ->pluck('selected_option_id', 'question_id')
-                    ->toArray();
+        // kalau jadi pakai soal tipe isian kosong (fill_blank)
+        // $existingAnswers = Answer::select('id', 'question_id', 'selected_option_id', 'is_correct')
+        //     ->where('quiz_attempt_id', $attemptId)
+        //     ->whereIn('question_id', $questionsGroup->questions->pluck('id'))
+        //     ->get()
+        //     ->keyBy('question_id');
+
+        $existingAnswers = Answer::where('quiz_attempt_id', $attemptId)
+            ->whereIn('question_id', $questionsGroup->questions->pluck('id'))
+            ->pluck('selected_option_id', 'question_id')
+            ->toArray();
 
 
-            return view('pages/quiz/quizAttempt', compact(
+        return view('pages/quiz/quizAttempt', compact(
             'attemptId',
             'sectionId',
             'questionsGroup',
@@ -121,11 +121,11 @@ class QuizAttemptController extends Controller
             'existingAnswers'
         ));
     }
-    
+
     /**
      * Save answers via AJAX for a question group (optimized for bulk operations)
      */
-   
+
     public function saveAnswerAjax(Request $request, $attemptId)
     {
         try {
@@ -186,14 +186,14 @@ class QuizAttemptController extends Controller
                         //         'updated_at' => $currentTimestamp
                         //     ]);
                         // } else {
-                            // For multiple choice/true_false, update option
-                            $option = Option::find($answerValue);
-                            Answer::where('id', $existingAnswer->id)->update([
-                                'selected_option_id' => $answerValue,
-                                'fill_answer_text' => null,
-                                'is_correct' => $option->is_correct ?? false,
-                                'updated_at' => $currentTimestamp
-                            ]);
+                        // For multiple choice/true_false, update option
+                        $option = Option::find($answerValue);
+                        Answer::where('id', $existingAnswer->id)->update([
+                            'selected_option_id' => $answerValue,
+                            'fill_answer_text' => null,
+                            'is_correct' => $option->is_correct ?? false,
+                            'updated_at' => $currentTimestamp
+                        ]);
                         // }
                     } else {
                         // Prepare new answer for bulk insert
@@ -209,16 +209,16 @@ class QuizAttemptController extends Controller
                         //         'updated_at' => $currentTimestamp
                         //     ];
                         // } else {
-                            $option = Option::find($answerValue);
-                            $answersToInsert[] = [
-                                'quiz_attempt_id' => $attemptId,
-                                'question_id' => $questionId,
-                                'selected_option_id' => $answerValue,
-                                'fill_answer_text' => null,
-                                'is_correct' => $option->is_correct ?? false,
-                                'created_at' => $currentTimestamp,
-                                'updated_at' => $currentTimestamp
-                            ];
+                        $option = Option::find($answerValue);
+                        $answersToInsert[] = [
+                            'quiz_attempt_id' => $attemptId,
+                            'question_id' => $questionId,
+                            'selected_option_id' => $answerValue,
+                            'fill_answer_text' => null,
+                            'is_correct' => $option->is_correct ?? false,
+                            'created_at' => $currentTimestamp,
+                            'updated_at' => $currentTimestamp
+                        ];
                         // }
                     }
                 }
@@ -271,7 +271,7 @@ class QuizAttemptController extends Controller
 
         return false;
     }
-    
+
     public function attemptSubmit($attemptId)
     {
         $attempt = QuizAttempt::select('user_id', 'quiz_id', 'completed_at')->findOrFail($attemptId);
@@ -280,11 +280,11 @@ class QuizAttemptController extends Controller
             abort(403);
         }
 
-        $totalQuestions = Question::whereHas('group.section', function($query) use ($attempt) {
+        $totalQuestions = Question::whereHas('group.section', function ($query) use ($attempt) {
             $query->where('quiz_id', $attempt->quiz_id);
         })->count();
 
-        $correctAnswers = Answer::where('quiz_attempt_id', $attemptId)->where('is_correct', 1)->count();        
+        $correctAnswers = Answer::where('quiz_attempt_id', $attemptId)->where('is_correct', 1)->count();
 
         $wrongAnswers = $totalQuestions - $correctAnswers;
 
@@ -309,12 +309,12 @@ class QuizAttemptController extends Controller
     //     $totalQuestions = Question::whereHas('questionGroup.section', function($query) use ($attempt) {
     //         $query->where('quiz_id', $attempt->quiz_id);
     //     })->count();
-    
+
     //     // OPTIMASI: Single query untuk count answered questions
     //     $correctAnswers = Answer::where('attempt_id', $attemptId)
     //     ->where('is_true', 1)
     //     ->count();        
-    
+
     //     // OPTIMASI: Single update query
     //     DB::table('quiz_attempts')
     //         ->where('id', $attemptId)

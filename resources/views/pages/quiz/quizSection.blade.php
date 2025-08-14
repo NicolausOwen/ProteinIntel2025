@@ -17,9 +17,9 @@
             <a href="{{ route('user.attempt.questions', ['attempt' => $attempt->id, 'section' => $section->id]) }}"
                 class="block bg-white border-l-4 border-indigo-500 rounded-xl shadow p-5 hover:shadow-md hover:scale-[1.02] transition-all duration-300 group">
                 <div class="flex items-center space-x-4">
-                    <div class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
+                    {{-- <div class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center">
                         <i class="fas fa-layer-group text-indigo-600"></i>
-                    </div>
+                    </div> --}}
                     <div>
                         <h2 class="text-lg font-semibold text-gray-800 group-hover:text-indigo-700 transition">{{ $section->name }}</h2>
                     </div>

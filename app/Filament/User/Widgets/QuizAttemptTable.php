@@ -16,8 +16,8 @@ class QuizAttemptTable extends BaseWidget
         return $table
             ->query(
                 QuizAttempt::with('quiz')
-                ->where('user_id', Auth::id())
-                ->latest()
+                    ->where('user_id', Auth::id())
+                    ->latest()
             )
             ->columns([
                 Tables\Columns\TextColumn::make('quiz.title')->label('Quiz Title'),
@@ -26,7 +26,7 @@ class QuizAttemptTable extends BaseWidget
                 Tables\Columns\TextColumn::make('score'),
                 Tables\Columns\TextColumn::make('correct_count'),
                 Tables\Columns\TextColumn::make('wrong_count'),
-                Tables\Columns\TextColumn::make('percentage')->formatStateUsing(fn ($state) => $state . '%'),
+                Tables\Columns\TextColumn::make('percentage')->formatStateUsing(fn($state) => $state . '%'),
             ]);
     }
 }

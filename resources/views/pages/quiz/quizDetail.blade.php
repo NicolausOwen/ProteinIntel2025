@@ -14,11 +14,11 @@
                     </div>
                     
                     <!-- Quiz Icon -->
-                    <div class="relative z-10 mb-4">
+                    {{-- <div class="relative z-10 mb-4">
                         <div class="w-16 h-16 mx-auto bg-white bg-opacity-20 rounded-full flex items-center justify-center backdrop-blur-sm">
                             <i class="fas fa-brain text-2xl text-white"></i>
                         </div>
-                    </div>
+                    </div> --}}
                     
                     <form action="{{ route('user.attempt.start', $quiz->id) }}" method="post" class="relative z-10">
                         @csrf
@@ -35,11 +35,11 @@
                     <!-- Quiz Description -->
                     <div class="bg-gradient-to-r from-gray-50 to-indigo-50 rounded-xl p-4 mb-5 border border-gray-100">
                         <div class="flex items-start space-x-3">
-                            <div class="flex-shrink-0">
+                            {{-- <div class="flex-shrink-0">
                                 <div class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
                                     <i class="fas fa-info-circle text-indigo-600 text-sm"></i>
                                 </div>
-                            </div>
+                            </div> --}}
                             <div>
                                 <h3 class="text-md font-semibold text-gray-800 mb-1">Quiz Description</h3>
                                 <p class="text-gray-600 leading-relaxed text-sm">{{ $quiz->description }}</p>
@@ -51,9 +51,9 @@
                     <div class="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-4 mb-5 border border-orange-100">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center space-x-3">
-                                <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                                {{-- <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
                                     <i class="fas fa-clock text-orange-600"></i>
-                                </div>
+                                </div> --}}
                                 <div>
                                     <h3 class="text-md font-semibold text-gray-800">Duration</h3>
                                     <p class="text-orange-600 font-medium text-sm">{{ $quiz->duration_minutes }} minutes</p>
@@ -70,9 +70,9 @@
                     <div class="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl p-4 mb-5 border border-emerald-100">
                         <div class="flex items-start space-x-3">
                             <div class="flex-shrink-0">
-                                <div class="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
+                                {{-- <div class="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
                                     <i class="fas fa-lightbulb text-emerald-600 text-sm"></i>
-                                </div>
+                                </div> --}}
                             </div>
                             <div>
                                 <h3 class="text-md font-semibold text-gray-800 mb-2">Important Instructions</h3>
@@ -120,21 +120,21 @@
             <!-- Bottom Tips -->
             <div class="mt-6 grid grid-cols-3 gap-3">
                 <div class="bg-white bg-opacity-60 backdrop-blur-sm rounded-lg p-3 text-center border border-white border-opacity-20">
-                    <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-1">
+                    {{-- <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-1">
                         <i class="fas fa-laptop text-blue-600 text-xs"></i>
-                    </div>
+                    </div> --}}
                     <p class="text-xs text-gray-600">Use a stable device</p>
                 </div>
                 <div class="bg-white bg-opacity-60 backdrop-blur-sm rounded-lg p-3 text-center border border-white border-opacity-20">
-                    <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-1">
+                    {{-- <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-1">
                         <i class="fas fa-wifi text-green-600 text-xs"></i>
-                    </div>
+                    </div> --}}
                     <p class="text-xs text-gray-600">Ensure good connection</p>
                 </div>
                 <div class="bg-white bg-opacity-60 backdrop-blur-sm rounded-lg p-3 text-center border border-white border-opacity-20">
-                    <div class="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-1">
+                    {{-- <div class="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-1">
                         <i class="fas fa-focus text-purple-600 text-xs"></i>
-                    </div>
+                    </div> --}}
                     <p class="text-xs text-gray-600">Stay focused</p>
                 </div>
             </div>

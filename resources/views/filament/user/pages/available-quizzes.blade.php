@@ -5,6 +5,10 @@
         </div>
     @else
         @foreach ($quizzes as $quiz)
+            @php
+                $attempt = $attempts->firstWhere('quiz_id', $quiz->id);
+            @endphp
+
             <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow mb-4">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                     {{ $quiz->title }}
@@ -12,24 +16,44 @@
                 <p class="text-gray-600 dark:text-gray-300">{{ $quiz->description }}</p>
                 <p class="text-sm text-gray-500 dark:text-gray-400">Duration: {{ $quiz->duration_minutes }} minutes</p>
 
-                @foreach ($quizzes as $quiz)
-                    @php
-                        $attempt = $attempts->firstWhere('quiz_id', $quiz->id);
-                    @endphp
-
-                    <div class="mt-2">
-
-                        <x-filament::button 
-                            tag="a" 
+                <div class="mt-2">
+                    @if (!$attempt)
+                        {{-- Belum pernah attempt --}}
+                        <x-filament::button
+                            tag="a"
                             color="primary"
-                            :href="$attempt 
-                                ? route('user.quiz.sections', $attempt->id) 
-                                : route('user.quiz.index', $quiz->id)"
+                            :href="route('user.quiz.index', $quiz->id)"
                         >
-                            {{ $attempt ? 'Continue Quiz' : 'Start Quiz' }}
+                            Start Quiz
                         </x-filament::button>
-                    </div>
-                @endforeach
+                    @elseif (is_null($attempt->completed_at))
+                        {{-- Sedang berjalan --}}
+                        <x-filament::button
+                            tag="a"
+                            color="warning"
+                            :href="route('user.quiz.index', $attempt->id)"
+                        >
+                            Continue Quiz
+                        </x-filament::button>
+                    @else
+                        {{-- Sudah selesai --}}
+                        <x-filament::button
+                            tag="a"
+                            color="success"
+                            :href="route('user.quiz.index', $quiz->id)"
+                        >
+                            Retake Quiz
+                        </x-filament::button>
+
+                        <x-filament::button
+                            tag="a"
+                            color="secondary"
+                            :href="route('user.quiz.index', $attempt->id)"
+                        >
+                            View Result
+                        </x-filament::button>
+                    @endif
+                </div>
             </div>
         @endforeach
     @endif

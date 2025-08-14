@@ -1,30 +1,61 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', 'Laravel') }}</title>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <!-- Tailwind -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 dark:bg-gray-900">
-            <div>
-                <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-                </a>
-            </div>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Open+Sans&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg">
-                {{ $slot }}
-            </div>
-        </div>
-    </body>
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+        }
+        .font-title {
+            font-family: 'Playfair Display', serif;
+        }
+    </style>
+
+    @stack('styles')
+</head>
+<body class="bg-gradient-to-r from-[#7F8CAA] to-[#B8CFCE] flex items-center justify-center min-h-screen px-4">
+    <!-- Lava Lamp Background -->
+        <div class="absolute inset-0 overflow-hidden">
+            <!-- Ellipse 1 -->
+            <div class="absolute -top-32 -left-32 w-[40rem] h-[40rem] bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 rounded-full blur-[120px] opacity-70 animate-lava"></div>
+            <!-- Ellipse 2 -->
+            <div class="absolute top-1/2 -right-32 w-[35rem] h-[35rem] bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 rounded-full blur-[120px] opacity-70 animate-lava-slow"></div>
+            <!-- Ellipse 3 -->
+            <div class="absolute bottom-0 left-1/3 w-[30rem] h-[30rem] bg-gradient-to-r from-yellow-400 via-orange-500 to-pink-500 rounded-full blur-[100px] opacity-60 animate-lava-fast"></div>
+        </div>  
+
+    <!-- Container utama -->
+    <div class="flex flex-col md:flex-row w-full max-w-4xl shadow-lg rounded overflow-hidden z-50">
+        {{ $slot }}
+    </div>
+
+    <script>
+        function togglePassword(fieldId) {
+            const passwordField = document.getElementById(fieldId);
+            const icon = document.getElementById(fieldId + 'Icon');
+
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    </script>
+</body>
 </html>

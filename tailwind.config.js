@@ -25,6 +25,15 @@ export default {
                 'lava-slow': 'lava 20s ease-in-out infinite',
                 'lava-fast': 'lava 8s ease-in-out infinite',
             },
+            colors: {
+                'sage': {
+                    100: '#f0f4f3',
+                    200: '#d4e4e1',
+                    300: '#b8cfce',
+                    400: '#9cb9b6',
+                    500: '#80a49e'
+                },
+            },
         },
     },
 

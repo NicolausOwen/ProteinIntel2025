@@ -92,19 +92,21 @@
     <form id="quizForm">
         <div class="question-group">
             @foreach ($questionsGroup->questions as $question)
-            {{ $question->audio_url }}
-            {{ $question->foto_url }}
+                {{-- {{ $question->audio_url }}
+                {{ $question->foto_url }} --}}
                 <div>
-                    @if ($question->foto_url == null)
+                    @if ($question->foto_url)
+                        <img src="{{ asset('storage/' . $question->foto_url) }}" 
+                            alt="Image Question" 
+                            style="max-width: 75%; height: auto;">
+                    @elseif ($question->audio_url)
                         <audio controls>
                             <source src="{{ asset('storage/' . $question->audio_url) }}" type="audio/mpeg">
                             Your browser does not support the audio element.
-                        </audio>   
-                    @else 
-                        <img src="{{ asset('storage/' . $question->foto_url) }}" alt="Image Question" style="max-width: 75%; height: auto;">
+                        </audio>
                     @endif
                     <h5>Question : {{ $question->question_text }}</h5>
-                    <h5>Explanation : {{ $question->explanation }}</h5>
+                    {{-- <h5>Explanation : {{ $question->explanation }}</h5> --}}
                 </div>
                 {{-- @switch($question->type)
                     @case('fill_blank')
@@ -139,6 +141,12 @@
         </div>
 
         <div class="navigation-buttons">
+            <a href="{{ route('user.quiz.sections', ['attempt' => $attemptId]) }}" 
+            class="btn btn-primary" 
+            id="nextButton">
+            Back to Sections
+            </a>
+
             @if ( $questionsGroup->type == 'text')
                 @if($prevGroupId)
                 <a href="{{ route('user.attempt.questions', ['attempt' => $attemptId, 'section' => $sectionId, 'questionGroupId' => $prevGroupId]) }}" 
