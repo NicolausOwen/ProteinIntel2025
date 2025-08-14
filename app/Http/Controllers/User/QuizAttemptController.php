@@ -99,16 +99,17 @@ class QuizAttemptController extends Controller
         });
 
         // kalau jadi pakai soal tipe isian kosong (fill_blank)
-        // $existingAnswers = Answer::select('id', 'question_id', 'selected_option_id', 'is_correct')
-        //     ->where('quiz_attempt_id', $attemptId)
-        //     ->whereIn('question_id', $questionsGroup->questions->pluck('id'))
-        //     ->get()
-        //     ->keyBy('question_id');
-
-        $existingAnswers = Answer::where('quiz_attempt_id', $attemptId)
+        $existingAnswers = Answer::select('id', 'question_id', 'selected_option_id', 'is_correct')
+            ->where('quiz_attempt_id', $attemptId)
             ->whereIn('question_id', $questionsGroup->questions->pluck('id'))
-            ->pluck('selected_option_id', 'question_id')
-            ->toArray();
+            ->get()
+            ->keyBy('question_id');
+
+        // matikan ini jika ada tipe soal fill_blank
+        // $existingAnswers = Answer::where('quiz_attempt_id', $attemptId)
+        //     ->whereIn('question_id', $questionsGroup->questions->pluck('id'))
+        //     ->pluck('selected_option_id', 'question_id')
+        //     ->toArray();
 
 
         return view('pages/quiz/quizAttempt', compact(
@@ -171,21 +172,21 @@ class QuizAttemptController extends Controller
                 $currentTimestamp = now();
 
                 foreach ($answers as $questionId => $answerValue) {
-                    // $question = $questions[$questionId];
+                    $question = $questions[$questionId];
 
                     if (isset($existingAnswers[$questionId])) {
                         $existingAnswer = $existingAnswers[$questionId];
 
-                        // if ($question->type === 'fill_blank') {
-                        //     // For fill_blank, update text and check correctness
-                        //     $isCorrect = $this->checkFillBlankCorrectness($question, $answerValue);
-                        //     Answer::where('id', $existingAnswer->id)->update([
-                        //         'selected_option_id' => null,
-                        //         'fill_answer_text' => $answerValue,
-                        //         'is_correct' => $isCorrect,
-                        //         'updated_at' => $currentTimestamp
-                        //     ]);
-                        // } else {
+                        if ($question->type === 'fill_blank') {
+                            // For fill_blank, update text and check correctness
+                            $isCorrect = $this->checkFillBlankCorrectness($question, $answerValue);
+                            Answer::where('id', $existingAnswer->id)->update([
+                                'selected_option_id' => null,
+                                'fill_answer_text' => $answerValue,
+                                'is_correct' => $isCorrect,
+                                'updated_at' => $currentTimestamp
+                            ]);
+                        } else {
                         // For multiple choice/true_false, update option
                         $option = Option::find($answerValue);
                         Answer::where('id', $existingAnswer->id)->update([
@@ -194,21 +195,21 @@ class QuizAttemptController extends Controller
                             'is_correct' => $option->is_correct ?? false,
                             'updated_at' => $currentTimestamp
                         ]);
-                        // }
+                        }
                     } else {
                         // Prepare new answer for bulk insert
-                        // if ($question->type === 'fill_blank') {
-                        //     $isCorrect = $this->checkFillBlankCorrectness($question, $answerValue);
-                        //     $answersToInsert[] = [
-                        //         'quiz_attempt_id' => $attemptId,
-                        //         'question_id' => $questionId,
-                        //         'selected_option_id' => null,
-                        //         'fill_answer_text' => $answerValue,
-                        //         'is_correct' => $isCorrect, // harusnya pakai variable $isCorrect, tapi set null dulu karena masih error
-                        //         'created_at' => $currentTimestamp,
-                        //         'updated_at' => $currentTimestamp
-                        //     ];
-                        // } else {
+                        if ($question->type === 'fill_blank') {
+                            $isCorrect = $this->checkFillBlankCorrectness($question, $answerValue);
+                            $answersToInsert[] = [
+                                'quiz_attempt_id' => $attemptId,
+                                'question_id' => $questionId,
+                                'selected_option_id' => null,
+                                'fill_answer_text' => $answerValue,
+                                'is_correct' => $isCorrect,
+                                'created_at' => $currentTimestamp,
+                                'updated_at' => $currentTimestamp
+                            ];
+                        } else {
                         $option = Option::find($answerValue);
                         $answersToInsert[] = [
                             'quiz_attempt_id' => $attemptId,
@@ -219,7 +220,7 @@ class QuizAttemptController extends Controller
                             'created_at' => $currentTimestamp,
                             'updated_at' => $currentTimestamp
                         ];
-                        // }
+                        }
                     }
                 }
 

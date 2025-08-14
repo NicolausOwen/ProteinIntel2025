@@ -96,19 +96,19 @@
                 {{ $question->foto_url }} --}}
                 <div>
                     @if ($question->foto_url)
-                        <img src="{{ asset('storage/' . $question->foto_url) }}" 
+                        <img src="{{ asset('storage/img/' . $question->foto_url) }}" 
                             alt="Image Question" 
                             style="max-width: 75%; height: auto;">
                     @elseif ($question->audio_url)
                         <audio controls>
-                            <source src="{{ asset('storage/' . $question->audio_url) }}" type="audio/mpeg">
+                            <source src="{{ asset('storage/audio/' . $question->audio_url) }}" type="audio/mpeg">
                             Your browser does not support the audio element.
                         </audio>
                     @endif
                     <h5>Question : {{ $question->question_text }}</h5>
                     {{-- <h5>Explanation : {{ $question->explanation }}</h5> --}}
                 </div>
-                {{-- @switch($question->type)
+                @switch($question->type)
                     @case('fill_blank')
                         <div class="form-group">
                             <label for="question_{{ $question->id }}">Your Answer:</label>
@@ -119,8 +119,8 @@
                                    data-question-id="{{ $question->id }}"
                                    value="{{ $existingAnswers[$question->id]->fill_answer_text ?? '' }}">
                         </div>
-                    @break --}}
-                    {{-- @default --}}
+                    @break
+                    @default
                         @foreach ($question->options as $option)
                             <div>
                                 <input type="radio" 
@@ -129,13 +129,13 @@
                                 id="option-{{ $option->id }}"
                                 data-question-id="{{ $question->id }}"
                                 class="question-option"
-                                {{-- kalau jadi pakai soal tipe isian --}}
-                                {{-- @if(isset($existingAnswers[$question->id]) && $existingAnswers[$question->id]->selected_option_id == $option->id) checked @endif> --}}
-                                @if(isset($existingAnswers[$question->id]) && $existingAnswers[$question->id] == $option->id) checked @endif>
+                                {{-- kalau jadi pakai soal tipe isian : --}}
+                                @if(isset($existingAnswers[$question->id]) && $existingAnswers[$question->id]->selected_option_id == $option->id) checked @endif>
+                                {{-- @if(isset($existingAnswers[$question->id]) && $existingAnswers[$question->id] == $option->id) checked @endif> --}}
                                 <label for="option-{{ $option->id }}">{{ $option->option_text }}</label>
                             </div>
                         @endforeach
-                {{-- @endswitch --}}
+                @endswitch
                 <hr>
             @endforeach
         </div>
