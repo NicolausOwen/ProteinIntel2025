@@ -274,7 +274,7 @@
             
                 const form = document.getElementById('autoSubmitForm');
                 if (form && QUIZ_DATA && QUIZ_DATA.attempt_id) {
-                    form.action = 'user/attempt/' + QUIZ_DATA.attempt_id + '/submit';
+                    form.action = '/user/attempt/' + QUIZ_DATA.attempt_id + '/submit';
                     form.submit();
                 } else {
                     console.error('Auto submit form or attempt_id not found');
