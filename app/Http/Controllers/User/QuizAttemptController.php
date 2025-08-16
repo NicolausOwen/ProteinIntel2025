@@ -187,14 +187,14 @@ class QuizAttemptController extends Controller
                                 'updated_at' => $currentTimestamp
                             ]);
                         } else {
-                        // For multiple choice/true_false, update option
-                        $option = Option::find($answerValue);
-                        Answer::where('id', $existingAnswer->id)->update([
-                            'selected_option_id' => $answerValue,
-                            'fill_answer_text' => null,
-                            'is_correct' => $option->is_correct ?? false,
-                            'updated_at' => $currentTimestamp
-                        ]);
+                            // For multiple choice/true_false, update option
+                            $option = Option::find($answerValue);
+                            Answer::where('id', $existingAnswer->id)->update([
+                                'selected_option_id' => $answerValue,
+                                'fill_answer_text' => null,
+                                'is_correct' => $option->is_correct ?? false,
+                                'updated_at' => $currentTimestamp
+                            ]);
                         }
                     } else {
                         // Prepare new answer for bulk insert
@@ -210,16 +210,16 @@ class QuizAttemptController extends Controller
                                 'updated_at' => $currentTimestamp
                             ];
                         } else {
-                        $option = Option::find($answerValue);
-                        $answersToInsert[] = [
-                            'quiz_attempt_id' => $attemptId,
-                            'question_id' => $questionId,
-                            'selected_option_id' => $answerValue,
-                            'fill_answer_text' => null,
-                            'is_correct' => $option->is_correct ?? false,
-                            'created_at' => $currentTimestamp,
-                            'updated_at' => $currentTimestamp
-                        ];
+                            $option = Option::find($answerValue);
+                            $answersToInsert[] = [
+                                'quiz_attempt_id' => $attemptId,
+                                'question_id' => $questionId,
+                                'selected_option_id' => $answerValue,
+                                'fill_answer_text' => null,
+                                'is_correct' => $option->is_correct ?? false,
+                                'created_at' => $currentTimestamp,
+                                'updated_at' => $currentTimestamp
+                            ];
                         }
                     }
                 }
@@ -298,7 +298,7 @@ class QuizAttemptController extends Controller
                 'completed_at' => now()
             ]);
 
-        return redirect()->route('home');
+        return redirect()->route('user.attempt.result', $attempt->id);
     }
 
     /**

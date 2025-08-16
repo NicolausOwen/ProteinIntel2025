@@ -44,6 +44,9 @@ Route::prefix('user')->middleware(['auth', 'role:user'])->group(function () {
         ->name('user.attempt.save.answer.ajax');
 
     Route::post('/attempt/{attempt}/submit', [QuizAttemptController::class, 'attemptSubmit'])->name('user.attempt.submit');
+
+    Route::get('/attempt/{attempt}/result', [ResultController::class, 'show'])->name('user.attempt.result');
+    Route::get('/attempt/{attempt}/review', [ResultController::class, 'review'])->name('user.attempt.review');
 });
 
 require __DIR__ . '/auth.php';

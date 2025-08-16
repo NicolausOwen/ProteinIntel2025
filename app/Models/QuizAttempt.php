@@ -49,7 +49,7 @@ class QuizAttempt extends Model
     {
         static::saved(function ($attempt) {
             Cache::forget("quiz_attempt_user_{$attempt->id}");
-    });
+        });
     }
 }
-    
+

@@ -36,7 +36,6 @@
                             Continue Quiz
                         </x-filament::button>
                     @else
-                        {{-- Sudah selesai --}}
                         <x-filament::button
                             tag="a"
                             color="success"
@@ -47,8 +46,8 @@
 
                         <x-filament::button
                             tag="a"
-                            color="secondary"
-                            :href="route('user.quiz.index', $attempt->id)"
+                            color="warning"
+                            :href="route('user.attempt.result', $attempt->id)"
                         >
                             View Result
                         </x-filament::button>
