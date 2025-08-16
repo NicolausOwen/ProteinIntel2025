@@ -46,9 +46,10 @@ class QuizAttemptController extends Controller
             'percentage' => 0.00,
         ]);
 
-        return redirect()->route('user.quiz.sections', [
-            'attempt' => $quizAttempt->id
-        ]);
+        // return redirect()->route('user.attempt.result', $attempt->id);
+
+        return redirect('/user/available-quizzes')
+            ->with('success', 'Terimakasih Telah Mengerjakan Quiz Kami!');
     }
 
     public function showQuestion($attemptId, $sectionId, $questionGroupId = NULL)

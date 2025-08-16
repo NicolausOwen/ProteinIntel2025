@@ -88,7 +88,9 @@
                     </div>
                     <span class="min-w-16 font-medium text-gray-700">Benar</span>
                     <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
-                        <div class="h-full gradient-primary fill" style="width: {{ ($correctAnswers / $totalQuestions) * 100 }}%"></div>
+                        <div class="h-full gradient-primary fill" 
+                            style="width: {{ $totalQuestions > 0 ? ($correctAnswers / $totalQuestions) * 100 : 0 }}%">
+                        </div>
                     </div>
                     <span class="font-semibold text-gray-800">{{ $correctAnswers }}/{{ $totalQuestions }}</span>
                 </div>
@@ -102,7 +104,9 @@
                     </div>
                     <span class="min-w-16 font-medium text-gray-700">Salah</span>
                     <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
-                        <div class="h-full bg-yellow-500 fill" style="width: {{ ($wrongAnswers / $totalQuestions) * 100 }}%"></div>
+                        <div class="h-full bg-yellow-500 fill" 
+                            style="width: {{ $totalQuestions > 0 ? ($wrongAnswers / $totalQuestions) * 100 : 0 }}%">
+                        </div>
                     </div>
                     <span class="font-semibold text-gray-800">{{ $wrongAnswers }}/{{ $totalQuestions }}</span>
                 </div>
