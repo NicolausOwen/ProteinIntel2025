@@ -41,9 +41,9 @@
                 </div>
 
                 <!-- Countdown / CTA -->
-                <div x-data="countdownTimer('2025-08-16T14:30:15')" x-init="startTimer()">
+                <div x-data="countdownTimer('2025-08-24T00:00:00')" x-init="startTimer()">
                     <!-- Countdown -->
-                    <div x-show="!expired" x-cloak class="w-full max-w-md">
+                    <div x-show="!$store.quizState.expired" x-cloak class="w-full max-w-md">
                         <p class="font-title text-base sm:text-lg font-bold mb-4 text-[#333446]">Quiz available in:</p>
                         <div class="flex items-center justify-start gap-3 sm:gap-4">
                             <template x-for="unit in timerUnits" :key="unit.label">
@@ -57,7 +57,7 @@
                     </div>
 
                     <!-- CTA Button -->
-                    <div x-show="expired" x-cloak>
+                    <div x-show="$store.quizState.expired" x-cloak>
                         <a href="#quiz-selection"
                             class="inline-block bg-[#333446] text-[#B8CFCE] hover:bg-[#EAEFEF] hover:text-[#333446] focus:ring-4 focus:outline-none focus:ring-[#B8CFCE] font-medium rounded-lg text-base px-8 py-4 md:text-lg md:px-10 md:py-5 transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg">
                             Select Quiz
@@ -68,7 +68,7 @@
 
             <!-- Illustration Section -->
             <div class="flex justify-center items-center px-8 mt-6 sm:mt-0">
-                <img src="{{ asset('img/take-a-quiz/illustration2.png') }}" alt="Quiz Illustration"
+                <img src="{{ asset('img/take-a-quiz/Illustration2.png') }}" alt="Quiz Illustration"
                     class="w-full max-w-xs sm:max-w-md rounded-2xl drop-shadow-md transition-transform duration-300 ease-in-out hover:scale-105 hover:drop-shadow-xl">
             </div>
         </div>
@@ -175,7 +175,7 @@
 
                             <!-- Start Quiz Button (hanya muncul kalau countdown expired) -->
                             <a :href="'{{url('quiz')}}/' + activeCategory.id"
-                            x-show="expired" x-cloak
+                            x-show="$store.quizState.expired" x-cloak
                             class="inline-block bg-[#333446] text-[#B8CFCE] hover:bg-[#EAEFEF] hover:text-[#333446] 
                                     focus:ring-4 focus:outline-none focus:ring-[#B8CFCE] font-medium rounded-lg 
                                     text-lg px-8 py-4 text-center transition-all duration-300 hover:scale-105 
@@ -193,10 +193,15 @@
 
 @push('scripts')
     <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.store('quizState', {
+                expired: false
+            });
+        });
+        
         function countdownTimer(targetDateStr) {
             return {
                 targetTime: new Date(targetDateStr).getTime(),
-                expired: false,
                 intervalId: null,
                 // Using an array for easier looping in HTML
                 timerUnits: [{
@@ -230,7 +235,7 @@
 
                     if (distance < 0) {
                         clearInterval(this.intervalId);
-                        this.expired = true;
+                        Alpine.store('quizState').expired = true;
                         // Reset all values to 00
                         this.timerUnits.forEach(unit => unit.value = '00');
                         return;

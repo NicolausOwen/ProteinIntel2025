@@ -77,7 +77,7 @@
                     <div class="relative group">
                         <div class="absolute -inset-8 bg-gradient-to-r from-[#B8CFCE]/20 via-[#7F8CAA]/20 to-[#8794ba]/20 rounded-full blur-xl group-hover:blur-2xl transition-all duration-700 animate-pulse"></div>
                         <div class="relative bg-white/80 backdrop-blur-lg rounded-3xl p-8 shadow-2xl border border-[#B8CFCE]/30 group-hover:shadow-3xl transition-all duration-500">
-                            <img src="{{ asset('img/about-us/logo.png') }}" alt="Logo PROTEIN 2025" class="w-52 md:w-64 group-hover:scale-105 transition-all duration-500 filter drop-shadow-2xl">
+                            <img src="{{ asset('img/about-us/LOGO.png') }}" alt="Logo PROTEIN 2025" class="w-52 md:w-64 group-hover:scale-105 transition-all duration-500 filter drop-shadow-2xl">
                         </div>
                     </div>
                 </div>
@@ -207,7 +207,7 @@
     </section>
 
     <!-- Timeline Section -->
-    <section class="py-16 bg-gradient-to-br from-white to-gray-50 px-4">
+    {{-- <section class="py-16 bg-gradient-to-br from-white to-gray-50 px-4">
         <div class="max-w-5xl mx-auto">
             <h2 class="font-title text-3xl md:text-4xl font-bold text-center mb-12 bg-gradient-to-r from-[#7F8CAA] to-[#B8CFCE] bg-clip-text text-transparent">
                 Timeline PROTEIN 2025
@@ -240,7 +240,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> --}}
 
     <!-- FAQ Section -->
     @include('components.protein-faq')
