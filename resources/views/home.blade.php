@@ -33,7 +33,7 @@
             <!-- Main Title -->
             <h1 class="text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-black mb-4 leading-none font-title">
                 <span class="bg-gradient-to-r from-white via-gray-100 to-gray-200 bg-clip-text text-transparent">PROTEIN</span>
-                <span class="text-gray-100 ml-2 text-[170px]">2025</span>
+                <span class="text-gray-100 ml-2 text-[80px] lg:text-[170px]">2025</span>
             </h1>
             
             <!-- Subtitle -->
@@ -100,7 +100,7 @@
             <!-- Right Side Text -->
             <div class="w-full md:w-[50%] text-center lg:text-left z-10">
                 <h1
-                    class="text-2xl lg:text-3xl font-extrabold mb-4 bg-gradient-to-r from-slate-800 via-slate-700 to-slate-900 bg-clip-text text-transparent drop-shadow-sm">
+                    class="font-title text-2xl lg:text-3xl font-extrabold mb-4 bg-gradient-to-r from-slate-800 via-slate-700 to-slate-900 bg-clip-text text-transparent drop-shadow-sm lg:w-screen">
                     GETTING STARTED TO PROTEIN 2025
                 </h1>
                 <p class="text-sm lg:text-base mb-8 text-slate-800 leading-relaxed font-medium">
@@ -189,6 +189,46 @@
         </div>
     </section>
 
+    <!-- Media Partner Section -->
+    <section class="bg-gray-900 py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl lg:text-4xl font-bold text-white text-center mb-4 font-title">
+                Media Partner
+            </h2>
+            <p class="text-lg text-gray-300 text-center mb-12 max-w-2xl mx-auto">
+                Didukung oleh media partner terpercaya yang membantu menyebarkan informasi PROTEIN 2025
+            </p>
+
+            @php
+                // Simpan semua logo partner di array (partner1.png s/d partner22.png)
+                $partners = range(1, 22);
+            @endphp
+
+            <!-- Partner Logos -->
+            <div class="max-w-7xl mx-auto">
+                <div class="flex flex-wrap justify-center gap-6">
+                    @foreach ($partners as $partner)
+                        <div class="bg-gray-800 hover:bg-gray-700 transition-colors duration-300 
+                                    rounded-lg p-4 flex items-center justify-center group 
+                                    w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/6">
+                            <img src="{{ asset('img/home/medpar/partner' . $partner . '.png') }}" 
+                                alt="Partner {{ $partner }}" 
+                                class="max-h-[70px] object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300">
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="text-center mt-12">
+                <p class="text-gray-300 mb-6">Tertarik menjadi media partner kami?</p>
+                <a href="#contact" 
+                class="inline-block bg-white hover:bg-gray-200 text-gray-900 font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300">
+                    Hubungi Kami
+                </a>
+            </div>
+        </div>
+    </section>
 
     <!-- FAQ Section -->
     @include('components.protein-faq')

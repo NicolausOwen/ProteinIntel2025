@@ -37,6 +37,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             QuizSeeder::class,
             QuestionGroupSeeder::class,
+            Questions::class
         ]);
 
         // Quiz::factory(10)->create();

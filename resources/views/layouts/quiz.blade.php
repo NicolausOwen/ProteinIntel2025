@@ -4,7 +4,7 @@
       <meta charset="UTF-8">
       <meta name="csrf-token" content="{{ csrf_token() }}">
       
-      <title>{{ config('app.name', 'Laravel') }}</title>
+      <title>Quiz - {{ config('app.name', 'Laravel') }}</title>
 
       @vite(['resources/css/app.css', 'resources/js/app.js'])
       
@@ -76,7 +76,7 @@
 
     {{-- navbar --}}
     <nav class="navbar">
-        <div class="logo">PROTEIN 2025</div>
+        <div class="logo"><a href="{{ route('filament.user.pages.dashboard') }}">PROTEIN 2025</a></div>
         <div class="timer-container">
             <div class="timer" id="timer">--:--</div>
             <div class="status" id="status">Belum dimulai</div>
