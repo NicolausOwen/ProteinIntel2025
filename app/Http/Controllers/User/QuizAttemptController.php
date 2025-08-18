@@ -53,7 +53,6 @@ class QuizAttemptController extends Controller
 
     public function showQuestion($attemptId, $sectionId, $questionGroupId = NULL)
     {
-        // Cache key untuk user attempt validation
         $userAttemptCacheKey = "quiz_attempt_user_{$attemptId}";
 
         $userAttemptId = Cache::remember($userAttemptCacheKey, 3600, function () use ($attemptId) {
@@ -63,23 +62,24 @@ class QuizAttemptController extends Controller
         if ($userAttemptId !== Auth::id()) {
             abort(403);
         }
-
+        
         // Cache untuk group IDs di section yang sama
         $groupIdsCacheKey = "section_group_ids_{$sectionId}";
-
-        $groupIds = Cache::remember($groupIdsCacheKey, 1800, function () use ($sectionId) {
+        
+        $groupIds = Cache::remember($groupIdsCacheKey, 3600, function () use ($sectionId) {
             return QuestionGroup::where('section_id', $sectionId)
-                ->orderBy('id')
-                ->pluck('id')
-                ->toArray();
+            ->orderBy('id')
+            ->pluck('id')
+            ->toArray();
         });
+        
+        $allGroupId = ($sectionId == 1) ? $groupIds : null;
 
         if (is_null($questionGroupId)) {
             $questionGroupId = $groupIds[0];
         }
 
         $currentIndex = array_search($questionGroupId, $groupIds);
-
 
         $nextGroupId = $groupIds[$currentIndex + 1] ?? null;
         $prevGroupId = $groupIds[$currentIndex - 1] ?? null;
@@ -98,19 +98,11 @@ class QuizAttemptController extends Controller
             ])->findOrFail($questionGroupId);
         });
 
-        // kalau jadi pakai soal tipe isian kosong (fill_blank)
-        $existingAnswers = Answer::select('id', 'question_id', 'selected_option_id', 'is_correct')
+        $existingAnswers = Answer::select('id', 'question_id', 'selected_option_id', 'fill_answer_text', 'is_correct')
             ->where('quiz_attempt_id', $attemptId)
             ->whereIn('question_id', $questionsGroup->questions->pluck('id'))
             ->get()
             ->keyBy('question_id');
-
-        // tidak ada fillblank
-        // $existingAnswers = Answer::where('quiz_attempt_id', $attemptId)
-        //     ->whereIn('question_id', $questionsGroup->questions->pluck('id'))
-        //     ->pluck('selected_option_id', 'question_id')
-        //     ->toArray();
-
 
         return view('pages/quiz/quizAttempt', compact(
             'attemptId',
@@ -119,7 +111,8 @@ class QuizAttemptController extends Controller
             'questionGroupId',
             'nextGroupId',
             'prevGroupId',
-            'existingAnswers'
+            'existingAnswers',
+            'allGroupId',
         ));
     }
 
@@ -298,7 +291,7 @@ class QuizAttemptController extends Controller
                 'completed_at' => now()
             ]);
 
-        return redirect()->route('user.attempt.result', $attempt->id);
+        return redirect()->route('user.attempt.result', ['attempt' => $attemptId]);
     }
 
     /**

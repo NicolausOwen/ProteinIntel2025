@@ -4,6 +4,9 @@
 
 @push('styles')
     <style>
+        html {
+          scroll-behavior: smooth;
+        }
         .loading {
             display: none;
             color: #007bff;
@@ -71,6 +74,31 @@
 @endpush
 
 @section('container')
+
+    @if ($allGroupId)
+        @foreach ( $allGroupId as $groupId )
+                <button>
+                    <a href="{{ route('user.attempt.questions', [
+                        'attempt' => $attemptId, 
+                        'section' => $sectionId, 
+                        'questionGroupId' => $groupId
+                    ]) }}"
+                    class="btn btn-primary" id="nextButton">
+                    {{ $loop->iteration }}
+                    </a>
+                </button>
+        @endforeach
+    @else
+        @foreach ($questionsGroup->questions as $question)
+            <button>
+                <a href="#questionNum{{ $question->id }}" 
+                    class="btn btn-primary" id="nextButton">
+                    {{ $loop->iteration }}
+                </a>
+            </button>
+        @endforeach
+    @endif
+
     <h3>{{ $questionsGroup->title }}</h3>
     @switch($questionsGroup->type)
         {{-- @case('audio')
@@ -87,6 +115,7 @@
         @default
     @endswitch
 
+
     <div class="auto-save-status" id="autoSaveStatus"></div>
 
     <form id="quizForm">
@@ -96,16 +125,18 @@
                 {{ $question->foto_url }} --}}
                 <div>
                     @if ($question->foto_url)
-                        <img src="{{ asset('storage/img/' . $question->foto_url) }}" 
+                    Read to answer the questions below 
+                    <img src="{{ asset('storage/img/' . $question->foto_url) }}" 
                             alt="Image Question" 
                             style="max-width: 75%; height: auto;">
                     @elseif ($question->audio_url)
+                    listen carefully 
                         <audio controls>
                             <source src="{{ asset('storage/audio/' . $question->audio_url) }}" type="audio/mpeg">
                             Your browser does not support the audio element.
                         </audio>
                     @endif
-                    <h5>Question : {{ $question->question_text }}</h5>
+                    <h5 id="questionNum{{ $question->id }}">{{ $loop->iteration }}. {{ $question->question_text }}</h5>
                     {{-- <h5>Explanation : {{ $question->explanation }}</h5> --}}
                 </div>
                 @switch($question->type)
@@ -199,6 +230,10 @@
 
             // Save answers before navigation
             $('#nextButton, #finishButton').on('click', function(e) {
+                if (href.startsWith('#')) {
+                    return;
+                }
+
                 if (!isNavigating) {
                     e.preventDefault();
                     const href = $(this).attr('href');
@@ -213,6 +248,17 @@
             // Save answers before page unload
             $(window).on('beforeunload', function() {
                 if (!isNavigating) {
+                    saveAnswers();
+                }
+            });
+
+            $('.fill-blank-input').on('blur', function() {
+                saveAnswers();
+            });
+
+            $('.fill-blank-input').on('keypress', function(e) {
+                if (e.which === 13) {
+                    e.preventDefault();
                     saveAnswers();
                 }
             });
