@@ -21,10 +21,6 @@ class QuizAttemptController extends Controller
     {
         $userId = Auth::id();
 
-        // Validasi quiz exists
-        // $quiz = Quiz::findOrFail($quizId);
-
-        // cek apakah user sudah memiliki quiz attempt yang belum selesai
         $existingAttempt = QuizAttempt::where('user_id', $userId)
             ->where('quiz_id', $quizId)
             ->whereNull('completed_at')
@@ -48,8 +44,7 @@ class QuizAttemptController extends Controller
 
         // return redirect()->route('user.attempt.result', $attempt->id);
 
-        return redirect('/user/available-quizzes')
-            ->with('success', 'Terimakasih Telah Mengerjakan Quiz Kami!');
+        return redirect()->route('user.quiz.sections', ['attempt' => $quizAttempt->id]);
     }
 
     public function showQuestion($attemptId, $sectionId, $questionGroupId = NULL)
