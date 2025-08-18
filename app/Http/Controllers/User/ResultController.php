@@ -22,9 +22,9 @@ class ResultController extends Controller
             ->firstOrFail();
 
         // Hitung jumlah benar & salah
-        $totalQuestions = $attempt->answers->count();
-        $correctAnswers = $attempt->answers->where('is_correct', true)->count();
-        $wrongAnswers = $totalQuestions - $correctAnswers;
+        $totalQuestions = $attempt->correct_count + $attempt->wrong_count;
+        $correctAnswers = $attempt->correct_count;
+        $wrongAnswers = $attempt->wrong_count;
         $percentage = $totalQuestions > 0 ? round(($correctAnswers / $totalQuestions) * 100, 2) : 0;
 
         return view('pages.quiz.result', [
