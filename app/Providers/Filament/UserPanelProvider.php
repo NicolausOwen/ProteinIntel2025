@@ -26,7 +26,9 @@ class UserPanelProvider extends PanelProvider
         return $panel
             ->id('user')
             ->default()
+            ->darkMode(false)
             ->path('user')
+            ->breadcrumbs(false)
             ->colors([
                 'primary' => '#2C2C3C',
                 'gray' => [
@@ -55,7 +57,7 @@ class UserPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/User/Widgets'), for: 'App\\Filament\\User\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
+                // Widgets\AccountWidget::class,
                 // Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([

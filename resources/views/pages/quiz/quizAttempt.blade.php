@@ -1,278 +1,268 @@
 @extends('layouts.quiz')
 
-@section('title', 'About-us')
+@section('title', 'Quiz Test')
 
 @push('styles')
     <style>
-        html {
-          scroll-behavior: smooth;
+        /* General Styles */
+        html { scroll-behavior: smooth; }
+        body { background-color: #f0f2f5; font-family: sans-serif; }
+
+        /* --- Header & Timer --- */
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: #ffffff;
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 1.5rem;
         }
-        .loading {
-            display: none;
+        .quiz-header h2 { margin: 0; font-size: 1.5rem; }
+        .timer { font-size: 1.25rem; font-weight: bold; color: white; }
+
+        /* --- Moodle-style Quiz Navigation --- */
+        .quiz-navigation-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 1rem 2rem;
+            background-color: #ffffff;
+            border-radius: 8px;
+            margin: 0 2rem 1.5rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .quiz-navigation-panel a {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 35px;
+            height: 35px;
+            text-decoration: none;
             color: #007bff;
-            font-size: 14px;
-            margin-left: 10px;
+            background-color: #e9ecef;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: all 0.2s ease-in-out;
         }
-        .success-message {
-            color: #28a745;
-            font-size: 14px;
-            margin-left: 10px;
-            display: none;
+        .quiz-navigation-panel a:hover { background-color: #dde4ea; }
+        .quiz-navigation-panel a.active {
+            background-color: #007bff;
+            color: #ffffff;
+            border-color: #007bff;
         }
-        .error-message {
-            color: #dc3545;
-            font-size: 14px;
-            margin-left: 10px;
-            display: none;
+        .quiz-navigation-panel a.answered {
+            background-color: #6c757d;
+            color: #ffffff;
         }
-        .question-group {
-            margin-bottom: 20px;
-            padding: 15px;
-            border: 1px solid #ddd;
+
+        /* --- Layout Container --- */
+        .quiz-container {
+            display: flex;
+            gap: 1.5rem;
+            padding: 0 2rem;
+        }
+
+        /* Panel Kiri (Hanya untuk Reading) */
+        .passage-panel {
+            flex: 1;
+            background-color: #ffffff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            height: 70vh;
+            overflow-y: auto;
+        }
+
+        /* Panel Kanan (Untuk Semua Soal) */
+        .questions-panel {
+            flex: 1;
+            background-color: #ffffff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            height: 70vh;
+            overflow-y: auto;
+        }
+        
+        .questions-panel.full-width {
+            flex-grow: 2;
+        }
+
+        .question-item {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 1.5rem;
+        }
+        .question-item:last-child { border-bottom: none; }
+        .question-item audio, .question-item img { margin-top: 10px; margin-bottom: 15px; }
+        .question-item .form-group { margin-top: 10px; }
+
+        /* --- Custom Audio Player Button --- */
+        .btn-play-audio {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 16px;
             border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
         }
+        .btn-play-audio:hover {
+            background-color: #218838;
+        }
+        .btn-play-audio:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        /* --- Footer Navigation Buttons --- */
         .navigation-buttons {
             margin-top: 20px;
-            padding: 15px 0;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .btn {
-            padding: 8px 16px;
-            margin: 0 5px;
-            text-decoration: none;
-            border-radius: 4px;
-            display: inline-block;
-        }
-        .btn-primary {
-            background-color: #007bff;
-            color: white;
-            border: none;
-        }
-        .btn-secondary {
-            background-color: #6c757d;
-            color: white;
-            border: none;
-        }
-        .auto-save-status {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 10px;
-            border-radius: 4px;
-            display: none;
-        }
-        .auto-save-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        .auto-save-error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
+        .btn { padding: 10px 20px; text-decoration: none; border-radius: 5px; border: none; cursor: pointer; }
+        .btn-primary { background-color: #007bff; color: white; }
+        .btn-secondary { background-color: #6c757d; color: white; }
+        
+        .save-status-container { display: flex; align-items: center; gap: 10px; }
+        .loading, .success-message, .error-message { display: none; font-size: 14px; }
+        .loading { color: #007bff; }
+        .success-message { color: #28a745; }
+        .error-message { color: #dc3545; }
     </style>
 @endpush
 
 @section('container')
+    <div class="quiz-header">
+        <h2>{{ $questionsGroup->title }}</h2>
+    </div>
 
-    @if ($allGroupId)
-        @foreach ( $allGroupId as $groupId )
-                <button>
-                    <a href="{{ route('user.attempt.questions', [
-                        'attempt' => $attemptId, 
-                        'section' => $sectionId, 
-                        'questionGroupId' => $groupId
-                    ]) }}"
-                    class="btn btn-primary" id="nextButton">
-                    {{ $loop->iteration }}
-                    </a>
-                </button>
-        @endforeach
-    @else
-        @foreach ($questionsGroup->questions as $question)
-            <button>
-                <a href="#questionNum{{ $question->id }}" 
-                    class="btn btn-primary" id="nextButton">
+    <div class="quiz-navigation-panel">
+        @if ($allGroupId)
+            @foreach ($allGroupId as $groupId)
+                <a href="{{ route('user.attempt.questions', ['attempt' => $attemptId, 'section' => $sectionId, 'questionGroupId' => $groupId]) }}"
+                   class="nav-item {{ $groupId == $questionsGroup->id ? 'active' : '' }}">
                     {{ $loop->iteration }}
                 </a>
-            </button>
-        @endforeach
-    @endif
-
-    <h3>{{ $questionsGroup->title }}</h3>
-    @switch($questionsGroup->type)
-        {{-- @case('audio')
-            <audio controls>
-                <source src="{{ asset('storage/' . $questionsGroup->shared_content) }}" type="audio/mpeg">
-                Your browser does not support the audio element.
-            </audio>
-        @break
-        @case('image')
-            <img src="{{ asset('storage/' . $questionsGroup->shared_content) }}" alt="Image Question" style="max-width: 100%; height: auto;">
-        @break --}}
-        @case('text')
-            <h5>text{{ $questionsGroup->shared_content }}</h5>
-        @default
-    @endswitch
-
-
-    <div class="auto-save-status" id="autoSaveStatus"></div>
+            @endforeach
+        @else
+            @foreach ($questionsGroup->questions as $question)
+                <a href="#question-{{ $question->id }}"
+                   id="nav-{{ $question->id }}"
+                   class="nav-item @if(isset($existingAnswers[$question->id])) answered @endif">
+                    {{ $loop->iteration }}
+                </a>
+            @endforeach
+        @endif
+    </div>
 
     <form id="quizForm">
-        <div class="question-group">
-            @foreach ($questionsGroup->questions as $question)
-                {{-- {{ $question->audio_url }}
-                {{ $question->foto_url }} --}}
-                <div>
-                    @if ($question->foto_url)
-                    Read to answer the questions below 
-                    <img src="{{ asset('storage/img/' . $question->foto_url) }}" 
-                            alt="Image Question" 
-                            style="max-width: 75%; height: auto;">
-                    @elseif ($question->audio_url)
-                    listen carefully 
-                        <audio controls>
-                            <source src="{{ asset('storage/audio/' . $question->audio_url) }}" type="audio/mpeg">
-                            Your browser does not support the audio element.
-                        </audio>
+        <div class="quiz-container">
+            
+            @if(!empty($questionsGroup->shared_content))
+                <div class="passage-panel">
+                    @php
+                        $contentParts = explode('|||', $questionsGroup->shared_content, 2);
+                        $passageTitle = $contentParts[0] ?? '';
+                        $passageBody = $contentParts[1] ?? ($contentParts[0] ?? '');
+                        if (count($contentParts) < 2) { $passageTitle = ''; }
+                    @endphp
+
+                    @if($passageTitle)
+                        <h4 style="font-weight: bold; margin-bottom: 1.5rem;">{{ $passageTitle }}</h4>
                     @endif
-                    <h5 id="questionNum{{ $question->id }}">{{ $loop->iteration }}. {{ $question->question_text }}</h5>
-                    {{-- <h5>Explanation : {{ $question->explanation }}</h5> --}}
+
+                    <div style="text-align: justify;">
+                        {!! str_replace('<br />', '<br><br>', nl2br(e(stripslashes($passageBody)))) !!}
+                    </div>
                 </div>
-                @switch($question->type)
-                    @case('fill_blank')
-                        <div class="form-group">
-                            <label for="question_{{ $question->id }}">Your Answer:</label>
-                            <input type="text" 
-                                   name="question_{{ $question->id }}" 
-                                   id="question_{{ $question->id }}"
-                                   class="form-control fill-blank-input"
-                                   data-question-id="{{ $question->id }}"
-                                   value="{{ $existingAnswers[$question->id]->fill_answer_text ?? '' }}">
-                        </div>
-                    @break
-                    @default
-                        @foreach ($question->options as $option)
-                            <div>
-                                <input type="radio" 
-                                name="question_{{ $question->id }}" 
-                                value="{{ $option->id }}" 
-                                id="option-{{ $option->id }}"
-                                data-question-id="{{ $question->id }}"
-                                class="question-option"
-                                {{-- kalau jadi pakai soal tipe isian : --}}
-                                @if(isset($existingAnswers[$question->id]) && $existingAnswers[$question->id]->selected_option_id == $option->id) checked @endif>
-                                {{-- @if(isset($existingAnswers[$question->id]) && $existingAnswers[$question->id] == $option->id) checked @endif> --}}
-                                <label for="option-{{ $option->id }}">{{ $option->option_text }}</label>
+            @endif
+
+            <div class="questions-panel @if(empty($questionsGroup->shared_content)) full-width @endif">
+                @foreach ($questionsGroup->questions as $question)
+                    <div class="question-item" id="question-{{ $question->id }}">
+                        <h5>{{ $loop->iteration }}. {{ $question->question_text }}</h5>
+                        
+                        {{-- LOGIKA UNTUK MENAMPILKAN MEDIA (AUDIO ATAU GAMBAR) --}}
+                        @if ($question->audio_url)
+                            <div class="custom-audio-player">
+                                <audio id="audio-player-{{ $question->id }}" src="{{ asset('storage/audio/' . $question->audio_url) }}"></audio>
+                                <button type="button" class="btn-play-audio" data-audio-id="{{ $question->id }}">
+                                    ▶️ Play Audio
+                                </button>
                             </div>
-                        @endforeach
-                @endswitch
-                <hr>
-            @endforeach
+                        @elseif ($question->foto_url)
+                            <img src="{{ asset('storage/img/' . $question->foto_url) }}" alt="Question Image" style="max-width: 100%; height: auto; border-radius: 8px;">
+                        @endif
+
+                        @switch($question->type)
+                            @case('fill_blank')
+                                <div class="form-group">
+                                    <input type="text" name="question_{{ $question->id }}" class="form-control fill-blank-input" data-question-id="{{ $question->id }}" value="{{ $existingAnswers[$question->id]->fill_answer_text ?? '' }}">
+                                </div>
+                                @break
+                            @default
+                                @foreach ($question->options as $option)
+                                    <div>
+                                        <input type="radio" name="question_{{ $question->id }}" value="{{ $option->id }}" id="option-{{ $option->id }}" data-question-id="{{ $question->id }}" class="question-option" @if(isset($existingAnswers[$question->id]) && $existingAnswers[$question->id]->selected_option_id == $option->id) checked @endif>
+                                        <label for="option-{{ $option->id }}">{{ $option->option_text }}</label>
+                                    </div>
+                                @endforeach
+                        @endswitch
+                    </div>
+                @endforeach
+            </div>
+
         </div>
 
         <div class="navigation-buttons">
-            <a href="{{ route('user.quiz.sections', ['attempt' => $attemptId]) }}" 
-            class="btn btn-primary" 
-            id="nextButton">
-            Back to Sections
-            </a>
-
-            @if ( $questionsGroup->type == 'text')
-                @if($prevGroupId)
-                <a href="{{ route('user.attempt.questions', ['attempt' => $attemptId, 'section' => $sectionId, 'questionGroupId' => $prevGroupId]) }}" 
-                       class="btn btn-secondary">Previous</a>
-                @endif
-                @if($nextGroupId)
-                    <a href="{{ route('user.attempt.questions', ['attempt' => $attemptId, 'section' => $sectionId, 'questionGroupId' => $nextGroupId]) }}" 
-                        class="btn btn-primary" id="nextButton">Next</a>
+            <div>
+                 @if($questionsGroup->type == 'text' && $prevGroupId)
+                    <a href="{{ route('user.attempt.questions', ['attempt' => $attemptId, 'section' => $sectionId, 'questionGroupId' => $prevGroupId]) }}" class="btn btn-secondary">Previous</a>
+                 @endif
+                 <a href="{{ route('user.quiz.sections', ['attempt' => $attemptId]) }}" class="btn btn-secondary">Back to Sections</a>
+            </div>
+            <div class="save-status-container">
+                <span class="loading" id="loadingIndicator">Saving...</span>
+                <span class="success-message" id="successMessage">✓ Saved</span>
+                <span class="error-message" id="errorMessage">✗ Save failed</span>
+            </div>
+            <div>
+                 @if($questionsGroup->type == 'text' && $nextGroupId)
+                    <a href="{{ route('user.attempt.questions', ['attempt' => $attemptId, 'section' => $sectionId, 'questionGroupId' => $nextGroupId]) }}" class="btn btn-primary" id="nextButton">Next</a>
                 @else
-                <a href="{{ route('user.quiz.sections', ['attempt' => $attemptId]) }}" 
-                    class="btn btn-primary" id="finishButton">Finish</a>
+                    <a href="{{ route('user.quiz.sections', ['attempt' => $attemptId]) }}" class="btn btn-primary" id="finishButton">Finish Section</a>
                 @endif
-            @else
-                <a href="{{ route('user.quiz.sections', ['attempt' => $attemptId]) }}" 
-                class="btn btn-primary" id="finishButton">Finish</a>
-            @endif
-                    <span class="loading" id="loadingIndicator">Saving...</span>
-                    <span class="success-message" id="successMessage">✓ Saved</span>
-            <span class="error-message" id="errorMessage">✗ Save failed</span>
+            </div>
         </div>
-    </form>
-    {{-- js autosubmit --}}
-    <form id="autoSubmitForm" method="POST" style="display: none;">
-        <input type="hidden" name="_token" value="{{ csrf_token() }}">
     </form>
 @endsection
 
 @push('scripts')
     <script>
         $(document).ready(function() {
-            // Set up CSRF token for AJAX requests
+            // --- FULL JAVASCRIPT FOR AUTO-SAVE ---
             $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
             });
 
             let saveTimeout;
             let isNavigating = false;
 
-            // Auto-save when radio button is changed
-            $('.question-option').on('change', function() {
-                clearTimeout(saveTimeout);
-                
-                // Debounce saving to avoid too many requests
-                saveTimeout = setTimeout(function() {
-                    saveAnswers();
-                }, 500);
-            });
-
-            // Save answers before navigation
-            $('#nextButton, #finishButton').on('click', function(e) {
-                if (href.startsWith('#')) {
-                    return;
-                }
-
-                if (!isNavigating) {
-                    e.preventDefault();
-                    const href = $(this).attr('href');
-                    
-                    saveAnswers(function() {
-                        isNavigating = true;
-                        window.location.href = href;
-                    });
-                }
-            });
-
-            // Save answers before page unload
-            $(window).on('beforeunload', function() {
-                if (!isNavigating) {
-                    saveAnswers();
-                }
-            });
-
-            $('.fill-blank-input').on('blur', function() {
-                saveAnswers();
-            });
-
-            $('.fill-blank-input').on('keypress', function(e) {
-                if (e.which === 13) {
-                    e.preventDefault();
-                    saveAnswers();
-                }
-            });
-
             function saveAnswers(callback) {
                 const answers = {};
-                
-                // Collect all selected answers
                 $('.question-option:checked').each(function() {
                     const questionId = $(this).data('question-id');
                     const optionId = $(this).val();
                     answers[questionId] = optionId;
                 });
-
                 $('.fill-blank-input').each(function() {
                     const questionId = $(this).data('question-id');
                     const answerText = $(this).val();
@@ -281,7 +271,6 @@
                     }
                 });
 
-                // Only save if there are answers
                 if (Object.keys(answers).length === 0) {
                     if (callback) callback();
                     return;
@@ -299,57 +288,97 @@
                     },
                     success: function(response) {
                         showSuccess();
-                        showAutoSaveStatus('Answers saved successfully', 'success');
                         if (callback) callback();
                     },
                     error: function(xhr, status, error) {
                         showError();
-                        showAutoSaveStatus('Failed to save answers', 'error');
                         console.error('Save error:', error);
-                        if (callback) callback(); // Still navigate even if save fails
+                        if (callback) callback();
                     }
                 });
             }
 
+            $('.question-option, .fill-blank-input').on('change keyup', function() {
+                clearTimeout(saveTimeout);
+                saveTimeout = setTimeout(saveAnswers, 500);
+            });
+            
+            $('#nextButton, #finishButton').on('click', function(e) {
+                const href = $(this).attr('href');
+                if (href.startsWith('#')) return;
+                
+                if (!isNavigating) {
+                    e.preventDefault();
+                    saveAnswers(function() {
+                        isNavigating = true;
+                        window.location.href = href;
+                    });
+                }
+            });
+
+            $(window).on('beforeunload', function() {
+                if (!isNavigating) {
+                    saveAnswers();
+                }
+            });
+
             function showLoading() {
-                hideAllMessages();
+                $('#successMessage, #errorMessage').hide();
                 $('#loadingIndicator').show();
             }
-
             function showSuccess() {
-                hideAllMessages();
+                $('#loadingIndicator, #errorMessage').hide();
                 $('#successMessage').show();
-                setTimeout(hideAllMessages, 2000);
+                setTimeout(() => $('#successMessage').hide(), 2000);
             }
-
             function showError() {
-                hideAllMessages();
+                $('#loadingIndicator, #successMessage').hide();
                 $('#errorMessage').show();
-                setTimeout(hideAllMessages, 3000);
+                setTimeout(() => $('#errorMessage').hide(), 3000);
             }
+            
+            // --- SCRIPT TAMBAHAN UNTUK UI ---
+            $('.question-option, .fill-blank-input').on('change keyup', function() {
+                const questionId = $(this).data('question-id');
+                $('#nav-' + questionId).addClass('answered');
+            });
 
-            function hideAllMessages() {
-                $('#loadingIndicator, #successMessage, #errorMessage').hide();
-            }
-
-            function showAutoSaveStatus(message, type) {
-                const statusDiv = $('#autoSaveStatus');
-                statusDiv.removeClass('auto-save-success auto-save-error');
-                statusDiv.addClass('auto-save-' + type);
-                statusDiv.text(message);
-                statusDiv.show();
-                
-                setTimeout(function() {
-                    statusDiv.hide();
-                }, 3000);
-            }
-
-            // Manual save button (optional)
-            if ($('#manualSaveButton').length) {
-                $('#manualSaveButton').on('click', function() {
-                    saveAnswers();
+            if ($('.questions-panel.full-width').length > 0) {
+                const questionPanel = $('.questions-panel.full-width');
+                const navLinks = $('.nav-item');
+                questionPanel.on('scroll', function() {
+                    let currentQuestionId = '';
+                    $('.question-item').each(function() {
+                        const questionTop = $(this).position().top;
+                        if (questionTop >= -10 && questionTop < questionPanel.height() / 2) {
+                            currentQuestionId = $(this).attr('id');
+                            return false;
+                        }
+                    });
+                    if (currentQuestionId) {
+                        navLinks.removeClass('active');
+                        $('a[href="#' + currentQuestionId + '"]').addClass('active');
+                    }
                 });
+                questionPanel.trigger('scroll');
             }
+
+            // --- JAVASCRIPT UNTUK AUDIO PLAYER ---
+            $('.btn-play-audio').on('click', function() {
+                const button = $(this);
+                const audioId = button.data('audio-id');
+                const audioElement = $('#audio-player-' + audioId)[0]; 
+
+                if (audioElement) {
+                    audioElement.play();
+                    button.prop('disabled', true);
+                    button.html('Playing...');
+
+                    $(audioElement).on('ended', function() {
+                        button.html('✔️ Played');
+                    });
+                }
+            });
         });
     </script>
-    @endpush
+@endpush

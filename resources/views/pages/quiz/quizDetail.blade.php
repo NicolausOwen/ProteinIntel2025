@@ -94,25 +94,39 @@
                         </div>
                     </div>
                     
-                    <!-- Start Button -->
+                    <!-- Start / Continue Button -->
                     <div class="text-center">
-                        <button 
-                            onclick="startQuiz()" 
-                            id="startBtn" 
-                            type="submit" 
-                            name="submit"
-                            class="group relative inline-flex items-center justify-center px-8 py-3 text-md font-semibold text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-xl hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 transform hover:-translate-y-1 hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-purple-300 min-w-40"
-                        >
-                            <div class="absolute inset-0 bg-gradient-to-r from-white to-transparent opacity-0 group-hover:opacity-10 rounded-xl transition-opacity duration-300"></div>
-                            <i class="fas fa-play mr-2 group-hover:translate-x-1 transition-transform duration-300"></i>
-                            <span class="relative z-10">Start Quiz</span>
-                        </button>
-                        
+                        @if(isset($attempt) && !$attempt->is_submitted) 
+                            {{-- Kalau sudah ada attempt & belum submit --}}
+                            <a 
+                                href="{{ route('user.quiz.sections', $attempt->id) }}" 
+                                class="group relative inline-flex items-center justify-center px-8 py-3 text-md font-semibold text-white bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 rounded-xl hover:from-yellow-600 hover:via-orange-600 hover:to-red-600 transform hover:-translate-y-1 hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-orange-300 min-w-40"
+                            >
+                                <div class="absolute inset-0 bg-gradient-to-r from-white to-transparent opacity-0 group-hover:opacity-10 rounded-xl transition-opacity duration-300"></div>
+                                <i class="fas fa-play mr-2 group-hover:translate-x-1 transition-transform duration-300"></i>
+                                <span class="relative z-10">Continue Quiz</span>
+                            </a>
+                        @else 
+                            {{-- Kalau belum ada attempt --}}
+                            <button 
+                                onclick="startQuiz()" 
+                                id="startBtn" 
+                                type="submit" 
+                                name="submit"
+                                class="group relative inline-flex items-center justify-center px-8 py-3 text-md font-semibold text-white bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-xl hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 transform hover:-translate-y-1 hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-purple-300 min-w-40"
+                            >
+                                <div class="absolute inset-0 bg-gradient-to-r from-white to-transparent opacity-0 group-hover:opacity-10 rounded-xl transition-opacity duration-300"></div>
+                                <i class="fas fa-play mr-2 group-hover:translate-x-1 transition-transform duration-300"></i>
+                                <span class="relative z-10">Start Quiz</span>
+                            </button>
+                        @endif
+
                         <p class="text-xs text-gray-500 mt-3">
                             <i class="fas fa-shield-alt mr-1"></i>
                             Your progress will be automatically saved
                         </p>
                     </div>
+
                     </form>
                 </div>
             </div>

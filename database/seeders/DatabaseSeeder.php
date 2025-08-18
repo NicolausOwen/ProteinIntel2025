@@ -37,7 +37,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             QuizSeeder::class,
             QuestionGroupSeeder::class,
-            Questions::class
+            Questions::class,
+            OptionsSeeder::class,
+            ListeningSectionSeeder::class,
+            StructureSectionSeeder::class
         ]);
 
         // Quiz::factory(10)->create();

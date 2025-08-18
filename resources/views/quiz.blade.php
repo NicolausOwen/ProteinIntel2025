@@ -35,8 +35,8 @@
                         <span class="gradient-text block mt-2">English skills?</span>
                     </h1>
                     <p class="text-base sm:text-lg text-gray-200 leading-relaxed">
-                        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nobis numquam aliquid rerum vel
-                        officia iusto maiores nisi hic ex laborum!
+                        Challenge yourself with a variety of quizzes designed to improve your grammar, vocabulary, and reading
+                        comprehension. Take the test now and see how much you’ve mastered!
                     </p>
                 </div>
 

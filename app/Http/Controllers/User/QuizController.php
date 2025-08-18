@@ -12,6 +12,7 @@ class QuizController extends Controller
 {
     public function index($quizId)
     {
+        // cek kalau user sudah menyelesaikan quiz
         $hasCompletedQuiz = QuizAttempt::where('quiz_id', $quizId)
             ->where('user_id', Auth::id())
             ->whereNotNull('completed_at')
@@ -22,11 +23,24 @@ class QuizController extends Controller
                 ->with('message', 'Anda sudah menyelesaikan quiz ini sebelumnya.');
         }
 
+        // cek kalau user sudah punya attempt tapi belum selesai
+        $existingAttempt = QuizAttempt::where('quiz_id', $quizId)
+            ->where('user_id', Auth::id())
+            ->whereNull('completed_at')
+            ->first();
+
+        if ($existingAttempt) {
+            // langsung redirect ke halaman sections
+            return redirect()->route('user.quiz.sections', $existingAttempt->id);
+        }
+
+        // kalau belum ada attempt sama sekali → tampil detail quiz
         $quiz = Quiz::select('id', 'title', 'description', 'duration_minutes')->find($quizId);
         session(['quiz_data' => ['duration_minutes' => $quiz->duration_minutes]]);
 
         return view('pages/quiz/quiZDetail', compact('quiz'));
     }
+
 
     public function showSections($attemptId)
     {

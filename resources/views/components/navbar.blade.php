@@ -31,7 +31,7 @@
         <div class="hidden md:flex items-center space-x-4">
             @if (Route::has('login'))
                 @auth
-                    <a href="{{ url('/dashboard') }}"
+                    <a href="{{ route('filament.user.pages.dashboard') }}"
                        class="text-white font-semibold hover:text-black transition rounded-[10px] px-3 py-2"
                        onmouseover="this.style.backgroundColor='#B8CFCE'"
                        onmouseout="this.style.backgroundColor='transparent'">
