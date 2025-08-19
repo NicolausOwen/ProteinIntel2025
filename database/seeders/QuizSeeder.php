@@ -22,6 +22,7 @@ class QuizSeeder extends Seeder
             'description' => 'Simulasi Tryout TOEFL resmi berbasis CBT',
             'duration_minutes' => 120,
             'created_by' => 1, // Ganti sesuai user ID admin
+
             'created_at' => $now,
             'updated_at' => $now,
         ]);

@@ -58,17 +58,17 @@ class QuizAttemptController extends Controller
         if ($userAttemptId !== Auth::id()) {
             abort(403);
         }
-        
+
         // Cache untuk group IDs di section yang sama
         $groupIdsCacheKey = "section_group_ids_{$sectionId}";
-        
+
         $groupIds = Cache::remember($groupIdsCacheKey, 3600, function () use ($sectionId) {
             return QuestionGroup::where('section_id', $sectionId)
-            ->orderBy('id')
-            ->pluck('id')
-            ->toArray();
+                ->orderBy('id')
+                ->pluck('id')
+                ->toArray();
         });
-        
+
         $allGroupId = ($sectionId == 1) ? $groupIds : null;
 
         if (is_null($questionGroupId)) {

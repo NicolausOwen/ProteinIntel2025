@@ -35,8 +35,8 @@
                         <span class="gradient-text block mt-2">English skills?</span>
                     </h1>
                     <p class="text-base sm:text-lg text-gray-200 leading-relaxed">
-                        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Nobis numquam aliquid rerum vel
-                        officia iusto maiores nisi hic ex laborum!
+                        Challenge yourself with a variety of quizzes designed to improve your grammar, vocabulary, and reading
+                        comprehension. Take the test now and see how much you’ve mastered!
                     </p>
                 </div>
 
@@ -88,23 +88,23 @@
                             id: 'listening',
                             title: 'Listening',
                             description: 'Challenge your listening comprehension. This section tests your ability to understand spoken English in various contexts, from casual dialogues to formal monologues. Your task is to capture key details, main ideas, and the speaker\'s intent.',
-                            questions: '35',
-                            time: '40',
+                            questions: '50',
+                            time: '30',
                             img: '{{ asset('img/take-a-quiz/Listening.svg') }}'
                         },
                         {
                             id: 'structure',
                             title: 'Structure',
                             description: 'Evaluate your understanding of English structure and grammar. This section focuses on your ability to correctly construct sentences and identify errors in written expression. Your precision and knowledge of grammatical rules will be essential.',
-                            questions: '25',
-                            time: '20',
+                            questions: '40',
+                            time: '30',
                             img: '{{ asset('img/take-a-quiz/Structure.svg') }}'
                         },
                         {
                             id: 'reading',
                             title: 'Reading',
                             description: 'Test your reading comprehension skills. This section requires you to analyze various passages, identify main ideas, and interpret vocabulary in context. Success depends on your ability to understand both explicit and implied information.',
-                            questions: '40',
+                            questions: '50',
                             time: '60',
                             img: '{{ asset('img/take-a-quiz/Reading.svg') }}'
                         }
