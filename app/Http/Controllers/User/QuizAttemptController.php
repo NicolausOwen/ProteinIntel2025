@@ -270,6 +270,15 @@ class QuizAttemptController extends Controller
             abort(403);
         }
 
+        $hasCompletedQuiz = QuizAttempt::where('id', $attemptId)
+            ->whereNotNull('completed_at')
+            ->exists();
+
+        if ($hasCompletedQuiz) {
+            return redirect()->route('home')
+                ->with('message', 'Anda sudah menyelesaikan quiz ini sebelumnya.');
+        }
+
         $totalQuestions = Question::whereHas('group.section', function ($query) use ($attempt) {
             $query->where('quiz_id', $attempt->quiz_id);
         })->count();
