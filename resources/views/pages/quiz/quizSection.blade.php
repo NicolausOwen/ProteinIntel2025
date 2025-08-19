@@ -55,9 +55,6 @@
 
     </div>
 </div>
-<form id="autoSubmitForm" method="POST" style="display: none;">
-    <input type="hidden" name="_token" value="{{ csrf_token() }}">
-</form>
 @endsection
 
 @push('scripts')
