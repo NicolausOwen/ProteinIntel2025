@@ -59,6 +59,15 @@ class QuizAttemptController extends Controller
             abort(403);
         }
 
+        // $hasCompletedQuiz = QuizAttempt::where('id', $attemptId)
+        //     ->whereNotNull('completed_at')
+        //     ->exists();
+
+        // if ($hasCompletedQuiz) {
+        //     return redirect()->route('user.attempt.result', ['attempt' => $attemptId])
+        //         ->with('message', 'Anda sudah menyelesaikan quiz ini sebelumnya.');
+        // }
+
         // Cache untuk group IDs di section yang sama
         $groupIdsCacheKey = "section_group_ids_{$sectionId}";
 
@@ -130,6 +139,15 @@ class QuizAttemptController extends Controller
             // Verify user owns this attempt
             if ($attempt->user_id !== Auth::id()) {
                 return response()->json(['error' => 'Unauthorized'], 403);
+            }
+
+            $hasCompletedQuiz = QuizAttempt::where('id', $attemptId)
+                ->whereNotNull('completed_at')
+                ->exists();
+
+            if ($hasCompletedQuiz) {
+                return redirect()->route('user.attempt.result', ['attempt' => $attemptId])
+                    ->with('message', 'Anda sudah menyelesaikan quiz ini sebelumnya.');
             }
 
             $answers = $request->input('answers');
@@ -269,6 +287,15 @@ class QuizAttemptController extends Controller
         if ($attempt->user_id !== Auth::id()) {
             abort(403);
         }
+
+        // $hasCompletedQuiz = QuizAttempt::where('id', $attemptId)
+        //     ->whereNotNull('completed_at')
+        //     ->exists();
+
+        // if ($hasCompletedQuiz) {
+        //     return redirect()->route('user.attempt.result', ['attempt' => $attemptId])
+        //         ->with('message', 'Anda sudah menyelesaikan quiz ini sebelumnya.');
+        // }
 
         $totalQuestions = Question::whereHas('group.section', function ($query) use ($attempt) {
             $query->where('quiz_id', $attempt->quiz_id);

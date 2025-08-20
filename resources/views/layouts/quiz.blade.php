@@ -87,6 +87,9 @@
     <main>
     {{-- content --}}
     @yield('container')
+        <form id="autoSubmitForm" method="POST" style="display: none;">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+        </form>
     </main>
 
 
@@ -262,13 +265,11 @@
                 }
                 
                 // Auto submit quiz
-                alert('⏰ Waktu quiz habis! Quiz akan otomatis di-submit.');
                 this.removeBeforeUnloadWarning();
                 this.autoSubmit();
             }
 
             autoSubmit() {
-                console.log('Auto submit quiz...');
                 localStorage.removeItem('quiz_start_time');
                 localStorage.removeItem('quiz_duration');
                 localStorage.removeItem('quiz_active');
