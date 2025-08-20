@@ -12,16 +12,16 @@ class QuizController extends Controller
 {
     public function index($quizId)
     {
-        // cek kalau user sudah menyelesaikan quiz
-        $hasCompletedQuiz = QuizAttempt::where('quiz_id', $quizId)
-            ->where('user_id', Auth::id())
-            ->whereNotNull('completed_at')
-            ->exists();
+        // // cek kalau user sudah menyelesaikan quiz
+        // $hasCompletedQuiz = QuizAttempt::where('quiz_id', $quizId)
+        //     ->where('user_id', Auth::id())
+        //     ->whereNotNull('completed_at')
+        //     ->exists();
 
-        if ($hasCompletedQuiz) {
-            return redirect()->route('home')
-                ->with('message', 'Anda sudah menyelesaikan quiz ini sebelumnya.');
-        }
+        // if ($hasCompletedQuiz) {
+        //     return redirect()->route('home')
+        //         ->with('message', 'Anda sudah menyelesaikan quiz ini sebelumnya.');
+        // }
 
         // cek kalau user sudah punya attempt tapi belum selesai
         $existingAttempt = QuizAttempt::where('quiz_id', $quizId)
