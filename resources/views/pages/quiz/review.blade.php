@@ -10,23 +10,32 @@
             
             <ul class="mt-2 space-y-1">
                 @foreach ($answer->question->options as $option)
-                    <li class="@if($option->is_correct) 
+                    <li class="@if($option->id == $answer->selected_option_id && $option->is_correct) 
                                     text-green-600 font-bold
                                @elseif($option->id == $answer->selected_option_id && !$option->is_correct) 
-                                    text-red-600 font-bold 
+                                    text-red-600 font-bold
                                @endif">
                         {{ $option->option_text }}
-                        @if($option->is_correct) ✅ @endif
-                        @if($option->id == $answer->selected_option_id && !$option->is_correct) ❌ @endif
+                        
+                        {{-- Jika user benar, kasih ✅ --}}
+                        @if($option->id == $answer->selected_option_id && $option->is_correct)
+                            ✅
+                        @endif
+            
+                        {{-- Jika user salah, kasih ❌ hanya di pilihannya --}}
+                        @if($option->id == $answer->selected_option_id && !$option->is_correct)
+                            ❌
+                        @endif
                     </li>
                 @endforeach
             </ul>
 
-            @if($answer->question->explanation)
+
+            {{-- @if($answer->question->explanation)
                 <div class="mt-2 text-gray-700">
                     <strong>Penjelasan:</strong> {{ $answer->question->explanation }}
                 </div>
-            @endif
+            @endif --}}
         </div>
     @endforeach
 </div>
