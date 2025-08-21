@@ -146,8 +146,10 @@ class QuizAttemptController extends Controller
                 ->exists();
 
             if ($hasCompletedQuiz) {
-                return redirect()->route('user.attempt.result', ['attempt' => $attemptId])
-                    ->with('message', 'Anda sudah menyelesaikan quiz ini sebelumnya.');
+                return response()->json([
+                    'redirect' => route('user.attempt.result', ['attempt' => $attemptId]),
+                    'message' => 'Anda sudah menyelesaikan quiz ini sebelumnya.'
+                ], 409);
             }
 
             $answers = $request->input('answers');
@@ -288,14 +290,14 @@ class QuizAttemptController extends Controller
             abort(403);
         }
 
-        // $hasCompletedQuiz = QuizAttempt::where('id', $attemptId)
-        //     ->whereNotNull('completed_at')
-        //     ->exists();
+        $hasCompletedQuiz = QuizAttempt::where('id', $attemptId)
+            ->whereNotNull('completed_at')
+            ->exists();
 
-        // if ($hasCompletedQuiz) {
-        //     return redirect()->route('user.attempt.result', ['attempt' => $attemptId])
-        //         ->with('message', 'Anda sudah menyelesaikan quiz ini sebelumnya.');
-        // }
+        if ($hasCompletedQuiz) {
+            return redirect()->route('user.attempt.result', ['attempt' => $attemptId])
+                ->with('message', 'Anda sudah menyelesaikan quiz ini sebelumnya.');
+        }
 
         $totalQuestions = Question::whereHas('group.section', function ($query) use ($attempt) {
             $query->where('quiz_id', $attempt->quiz_id);
