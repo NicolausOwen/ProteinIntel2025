@@ -12,7 +12,7 @@
 
 @section('content')
     <!-- Quiz Introduction -->
-    <section class="relative h-screen">
+    <section class="relative h-[120vh]">
         <!-- Lava Lamp Background -->
         <div class="absolute inset-0 overflow-hidden">
             <!-- Ellipse 1 -->
