@@ -22,7 +22,8 @@ class QuizAttempt extends Model
         'score',
         'correct_count',
         'wrong_count',
-        'percentage'
+        'percentage',
+        'status'
     ];
 
     protected $casts = [

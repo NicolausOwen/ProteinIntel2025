@@ -40,6 +40,7 @@ class QuizAttemptController extends Controller
             'correct_count' => 0,
             'wrong_count' => 0,
             'percentage' => 0.00,
+            'status' => 'in_progress'
         ]);
 
         // return redirect()->route('user.attempt.result', $attempt->id);
@@ -313,7 +314,8 @@ class QuizAttemptController extends Controller
                 'correct_count' => $correctAnswers,
                 'wrong_count' => $wrongAnswers,
                 'updated_at' => now(),
-                'completed_at' => now()
+                'completed_at' => now(),
+                'status' => 'completed'
             ]);
 
         return redirect()->route('user.attempt.result', ['attempt' => $attemptId]);
