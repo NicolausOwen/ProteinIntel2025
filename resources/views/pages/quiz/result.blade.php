@@ -121,19 +121,22 @@
             
             <!-- Score Box -->
             <div class="bg-white rounded-xl shadow-lg p-8 text-center">
-                <h3 class="text-xl font-semibold text-gray-800 mb-6">Hasil</h3>
+                <h3 class="text-xl font-semibold text-gray-800 mb-6">Your Toefl Score is...</h3>
                 
                 <div class="w-32 h-32 rounded-full gradient-primary text-white flex items-center justify-center mx-auto mb-4">
-                    <span class="text-4xl font-bold">{{ $percentage }}%</span>
+                    <span class="text-4xl font-bold">{{ $score }}</span>
                 </div>
                 
                 <p class="text-gray-600 leading-relaxed">
                     @if($percentage >= 80)
-                        Luar biasa! Anda memiliki pemahaman yang sangat baik.
+                        Luar biasa! Anda memiliki pemahaman yang sangat baik. 
+                        Terus asah kemampuan Anda agar semakin percaya diri menghadapi tantangan yang lebih besar.
                     @elseif($percentage >= 60)
-                        Bagus! Anda memiliki pemahaman yang cukup baik.
+                        Bagus! Anda sudah memiliki pemahaman yang cukup baik. 
+                        Pertahankan dan tingkatkan sedikit demi sedikit, hasil besar akan mengikuti.
                     @else
-                        Tetap semangat! Ada ruang untuk perbaikan.
+                        Tetap semangat! Setiap kesalahan adalah langkah menuju keberhasilan. 
+                        Terus belajar dan jangan menyerah, usaha Anda pasti akan membuahkan hasil.
                     @endif
                 </p>
             </div>
@@ -192,24 +195,29 @@
                 <!-- Level Indicator -->
                 <div class="pt-6 border-t border-gray-200">
                     <span class="block font-semibold text-gray-800 mb-4">
-                        Level: 
-                        @if($percentage >= 80)
-                            Mahir
-                        @elseif($percentage >= 60)
-                            Menengah
+                        Your Level: 
+                        @if($score >= 601)
+                            Expert (C1–C2)
+                        @elseif($score >= 501)
+                            Advanced (B2)
+                        @elseif($score >= 421)
+                            Intermediate (B1)
                         @else
-                            Pemula
+                            Beginner (A1–A2)
                         @endif
                     </span>
                     <div class="flex rounded-lg overflow-hidden mb-2">
-                        <div class="flex-1 p-2 text-center text-xs font-medium text-white bg-red-500 {{ $percentage < 60 ? 'level-segment active' : '' }}">
-                            0–59
+                        <div class="flex-1 p-2 text-center text-xs font-medium text-white bg-red-500 {{ $score <= 420 ? 'level-segment active' : '' }}">
+                            310–420 <br>Beginner
                         </div>
-                        <div class="flex-1 p-2 text-center text-xs font-medium text-white bg-yellow-500 {{ $percentage >= 60 && $percentage < 80 ? 'level-segment active' : '' }}">
-                            60–79
+                        <div class="flex-1 p-1 text-center text-xs font-medium text-white bg-yellow-500 {{ $score >= 421 && $score <= 500 ? 'level-segment active' : '' }}">
+                            421–500 <br>Intermediate
                         </div>
-                        <div class="flex-1 p-2 text-center text-xs font-medium text-white bg-green-500 {{ $percentage >= 80 ? 'level-segment active' : '' }}">
-                            80–100
+                        <div class="flex-1 p-2 text-center text-xs font-medium text-white bg-blue-500 {{ $score >= 501 && $score <= 600 ? 'level-segment active' : '' }}">
+                            501–600 <br>Advanced
+                        </div>
+                        <div class="flex-1 p-2 text-center text-xs font-medium text-white bg-green-500 {{ $score >= 601 ? 'level-segment active' : '' }}">
+                            601–677 <br>Expert   
                         </div>
                     </div>
                 </div>
