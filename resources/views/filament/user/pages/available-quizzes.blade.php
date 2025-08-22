@@ -38,14 +38,6 @@
                     @else
                         <x-filament::button
                             tag="a"
-                            color="success"
-                            :href="route('user.quiz.index', $quiz->id)"
-                        >
-                            Retake Quiz
-                        </x-filament::button>
-
-                        <x-filament::button
-                            tag="a"
                             color="warning"
                             :href="route('user.attempt.result', $attempt->id)"
                         >
