@@ -19,28 +19,16 @@
                 <div class="mt-2">
                     @if (!$attempt)
                         {{-- Belum pernah attempt --}}
-                        <x-filament::button
-                            tag="a"
-                            color="primary"
-                            :href="route('user.quiz.index', $quiz->id)"
-                        >
+                        <x-filament::button tag="a" color="primary" :href="route('user.quiz.index', $quiz->id)">
                             Start Quiz
                         </x-filament::button>
                     @elseif (is_null($attempt->completed_at))
                         {{-- Sedang berjalan --}}
-                        <x-filament::button
-                            tag="a"
-                            color="warning"
-                            :href="route('user.quiz.index', $attempt->id)"
-                        >
+                        <x-filament::button tag="a" color="warning" :href="route('user.quiz.index', $quiz->id)">
                             Continue Quiz
                         </x-filament::button>
                     @else
-                        <x-filament::button
-                            tag="a"
-                            color="warning"
-                            :href="route('user.attempt.result', $attempt->id)"
-                        >
+                        <x-filament::button tag="a" color="warning" :href="route('user.attempt.result', $attempt->id)">
                             View Result
                         </x-filament::button>
                     @endif

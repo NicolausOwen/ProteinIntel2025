@@ -35,10 +35,11 @@ class QuizController extends Controller
         }
 
         // kalau belum ada attempt sama sekali → tampil detail quiz
+        $attempts = QuizAttempt::where('user_id', Auth::id())->get();
         $quiz = Quiz::select('id', 'title', 'description', 'duration_minutes')->find($quizId);
         session(['quiz_data' => ['duration_minutes' => $quiz->duration_minutes]]);
 
-        return view('pages/quiz/quizDetail', compact('quiz'));
+        return view('pages/quiz/quizDetail', compact('quiz', 'attempts'));
     }
 
 
