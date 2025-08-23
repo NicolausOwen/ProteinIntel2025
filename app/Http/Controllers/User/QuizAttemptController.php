@@ -350,43 +350,24 @@ class QuizAttemptController extends Controller
 
     public function attemptSubmit($attemptId)
     {
-        $attempt = QuizAttempt::select('user_id', 'quiz_id', 'completed_at')->findOrFail($attemptId);
+        $attempt = QuizAttempt::findOrFail($attemptId);
 
         if ($attempt->user_id !== Auth::id()) {
             abort(403);
         }
 
-        $hasCompletedQuiz = QuizAttempt::where('id', $attemptId)
-            ->whereNotNull('completed_at')
-            ->exists();
-
-        if ($hasCompletedQuiz) {
+        if ($attempt->completed_at) {
             return redirect()->route('user.attempt.result', ['attempt' => $attemptId])
                 ->with('message', 'Anda sudah menyelesaikan quiz ini sebelumnya.');
         }
 
-        $totalQuestions = Question::whereHas('group.section', function ($query) use ($attempt) {
-            $query->where('quiz_id', $attempt->quiz_id);
-        })->count();
-
-        $correctAnswers = Answer::where('quiz_attempt_id', $attemptId)->where('is_correct', 1)->count();
-
-        $wrongAnswers = $totalQuestions - $correctAnswers;
-
-        DB::table('quiz_attempts')
-            ->where('id', $attemptId)
-            ->update([
-                'correct_count' => $correctAnswers,
-                'wrong_count' => $wrongAnswers,
-                'updated_at' => now(),
-                'completed_at' => now(),
-                'status' => 'completed'
-            ]);
+        app(\App\Services\QuizAttemptService::class)->completeAttempt($attempt);
 
         session()->forget('quiz_attempt_session');
 
         return redirect()->route('user.attempt.result', ['attempt' => $attemptId]);
     }
+
 
     /**
      * Update attempt progress
