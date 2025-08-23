@@ -81,10 +81,6 @@
     {{-- navbar --}}
     <nav class="navbar">
         <div class="logo"><a href="{{ route('filament.user.pages.dashboard') }}">PROTEIN 2025</a></div>
-        <div class="timer-container">
-            <div class="timer" id="timer">--:--</div>
-            <div class="status" id="status">Belum dimulai</div>
-        </div>
     </nav>
 
     <main>
@@ -101,7 +97,7 @@
     @stack('scripts')
 
     <script>
-        const QUIZ_REMAINING = {{ $remaining ?? 0 }};
+        const QUIZ_REMAINING = {{ $remaining ?? 0 }}; // dalam detik dari server
 
         class QuizTimer {
             constructor() {
@@ -165,14 +161,6 @@
                 }
 
                 this.autoSubmit();
-            }
-
-            autoSubmit() {
-                const form = document.getElementById('autoSubmitForm');
-                if (form && {{ $attempt->id }}) {
-                    form.action = '/user/attempt/' + {{ $attempt->id }} + '/submit';
-                    form.submit();
-                }
             }
         }
 

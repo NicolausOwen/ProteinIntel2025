@@ -101,7 +101,7 @@
     @stack('scripts')
 
     <script>
-        const QUIZ_REMAINING = {{ $remaining ?? 0 }};
+        const QUIZ_REMAINING = {{ $remaining ?? 0 }}; // dalam detik dari server
 
         class QuizTimer {
             constructor() {
@@ -165,14 +165,6 @@
                 }
 
                 this.autoSubmit();
-            }
-
-            autoSubmit() {
-                const form = document.getElementById('autoSubmitForm');
-                if (form && {{ $attempt->id }}) {
-                    form.action = '/user/attempt/' + {{ $attempt->id }} + '/submit';
-                    form.submit();
-                }
             }
         }
 

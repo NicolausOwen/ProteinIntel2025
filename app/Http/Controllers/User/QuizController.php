@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Quiz;
 use App\Models\QuizAttempt;
+use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 
 class QuizController extends Controller
@@ -39,7 +40,9 @@ class QuizController extends Controller
         $quiz = Quiz::select('id', 'title', 'description', 'duration_minutes')->find($quizId);
         session(['quiz_data' => ['duration_minutes' => $quiz->duration_minutes]]);
 
-        return view('pages/quiz/quizDetail', compact('quiz', 'attempts'));
+        $remaining = 0;
+
+        return view('pages.quiz.quizDetail', compact('quiz', 'attempts', 'remaining'));
     }
 
 
@@ -58,27 +61,42 @@ class QuizController extends Controller
             ])
             ->findOrFail($attemptId);
 
-        session([
-            'quiz_data' => [
-                'attempt_id' => $attempt->id,
-                'id' => $attempt->quiz->id,
-                'duration_minutes' => $attempt->quiz->duration_minutes,
-                'started_at' => now(),
-                'title' => $attempt->quiz->title
-            ]
-        ]);
 
         if ($attempt->user_id !== Auth::id()) {
             abort(403);
         }
 
-        $sections = $attempt->quiz->sections;
+        $remaining = 0;
 
+        $quizSession = session('quiz_attempt_session');
+
+        if (!$quizSession || !isset($quizSession['end_at'])) {
+            return redirect()->route('filament.user.pages.available-quizzes')
+                ->with('error', 'Session kuis tidak ditemukan atau sudah berakhir.');
+        }
+
+        $remaining = now()->diffInSeconds(\Carbon\Carbon::parse($quizSession['end_at']), false);
+
+        // Cek sections
+        $sections = $attempt->quiz->sections;
         if ($sections->isEmpty()) {
-            return redirect()->route('user.result.show', ['attempt' => $attempt->id])
+            return redirect()->route('filament.user.pages.available-quizzes')
                 ->with('error', 'Tidak ada section dalam quiz ini.');
         }
 
-        return view('pages/quiz/quizSection', compact('attempt', 'sections'));
+        // Cek waktu habis
+        if ($remaining < 0) {
+            Notification::make()
+                ->title('Waktu kuis sudah habis')
+                ->success()
+                ->send();   
+
+            return redirect()->route('user.attempt.result', ['attempt' => $attempt->id])
+                ->with('error', 'Waktu kuis sudah habis.');
+        }
+
+
+        return view('pages.quiz.quizSection', compact('attempt', 'sections', 'remaining'));
+
     }
 }

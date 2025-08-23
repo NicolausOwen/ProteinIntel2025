@@ -12,8 +12,11 @@ use App\Models\QuestionGroup;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
+use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+
 
 class QuizAttemptController extends Controller
 {
@@ -31,6 +34,9 @@ class QuizAttemptController extends Controller
                 ->with('info', 'Anda memiliki quiz yang sedang berjalan');
         }
 
+        $quiz = Quiz::find($quizId);
+        $quizDuration = $quiz->duration_minutes;
+
         $quizAttempt = QuizAttempt::create([
             'user_id' => $userId,
             'quiz_id' => $quizId,
@@ -40,7 +46,19 @@ class QuizAttemptController extends Controller
             'correct_count' => 0,
             'wrong_count' => 0,
             'percentage' => 0.00,
-            'status' => 'in_progress'
+            'status' => 'in_progress',
+            'end_at' => Carbon::now()->addMinutes($quizDuration)
+        ]);
+
+        session([
+            'quiz_attempt_session' => [
+                'attempt_id'       => $quizAttempt->id,
+                'quiz_id'          => $quizAttempt->quiz_id,
+                'duration_minutes' => $quizDuration,
+                'started_at'       => $quizAttempt->started_at,
+                'end_at'           => $quizAttempt->end_at,
+                'title'            => $quiz->title,
+            ]
         ]);
 
         // return redirect()->route('user.attempt.result', $attempt->id);
@@ -59,6 +77,8 @@ class QuizAttemptController extends Controller
         if ($userAttemptId !== Auth::id()) {
             abort(403);
         }
+
+        $attempt = QuizAttempt::find($attemptId);
 
         // $hasCompletedQuiz = QuizAttempt::where('id', $attemptId)
         //     ->whereNotNull('completed_at')
@@ -104,13 +124,42 @@ class QuizAttemptController extends Controller
             ])->findOrFail($questionGroupId);
         });
 
+        $remaining = 0;
+
+        $quizSession = session('quiz_attempt_session');
+
+        if (!$quizSession || !isset($quizSession['end_at'])) {
+            return redirect()->route('filament.user.pages.available-quizzes')
+                ->with('error', 'Session kuis tidak ditemukan atau sudah berakhir.');
+        }
+
+        $remaining = now()->diffInSeconds(Carbon::parse($quizSession['end_at']), false);
+
+        // Cek sections
+        $sections = $attempt->quiz->sections;
+        if ($sections->isEmpty()) {
+            return redirect()->route('filament.user.pages.available-quizzes')
+                ->with('error', 'Tidak ada section dalam quiz ini.');
+        }
+
+        // Cek waktu habis
+        if ($remaining < 0) {
+            Notification::make()
+                ->title('Waktu kuis sudah habis')
+                ->success()
+                ->send();   
+
+            return redirect()->route('user.attempt.result', ['attempt' => $attempt->id])
+                ->with('error', 'Waktu kuis sudah habis.');
+        }
+
         $existingAnswers = Answer::select('id', 'question_id', 'selected_option_id', 'fill_answer_text', 'is_correct')
             ->where('quiz_attempt_id', $attemptId)
             ->whereIn('question_id', $questionsGroup->questions->pluck('id'))
-            ->get()
+            ->get()     
             ->keyBy('question_id');
 
-        return view('pages/quiz/quizAttempt', compact(
+        return view('pages.quiz.quizAttempt', compact(
             'attemptId',
             'sectionId',
             'questionsGroup',
@@ -119,6 +168,9 @@ class QuizAttemptController extends Controller
             'prevGroupId',
             'existingAnswers',
             'allGroupId',
+            'attempt',
+            'remaining',
+            'sections'
         ));
     }
 
@@ -317,6 +369,8 @@ class QuizAttemptController extends Controller
                 'completed_at' => now(),
                 'status' => 'completed'
             ]);
+
+        session()->forget('quiz_attempt_session');
 
         return redirect()->route('user.attempt.result', ['attempt' => $attemptId]);
     }
