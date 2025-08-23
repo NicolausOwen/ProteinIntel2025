@@ -15,12 +15,10 @@
 
                         <div
                             class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col transition transform hover:shadow-xl hover:-translate-y-1 rounded-md">
-                            
+
                             <!-- Gambar Full Width -->
                             <div class="w-full h-48 bg-gray-100 dark:bg-gray-700">
-                                <img src="{{ asset('img/quiz.jpg') }}"
-                                    alt="Quiz Image"
-                                    class="w-full h-full object-cover" />
+                                <img src="{{ asset('img/quiz.jpg') }}" alt="Quiz Image" class="w-full h-full object-cover" />
                             </div>
 
                             <!-- Isi Card -->
@@ -41,20 +39,17 @@
                                 <!-- Tombol -->
                                 <div class="mt-auto">
                                     @if (!$attempt)
-                                        <x-filament::button tag="a" color="primary"
-                                            class="w-full justify-center"
+                                        <x-filament::button tag="a" color="primary" class="w-full justify-center"
                                             :href="route('user.quiz.index', $quiz->id)">
                                             Start Quiz
                                         </x-filament::button>
                                     @elseif (is_null($attempt->completed_at))
-                                        <x-filament::button tag="a" color="warning"
-                                            class="w-full justify-center"
+                                        <x-filament::button tag="a" color="warning" class="w-full justify-center"
                                             :href="route('user.quiz.index', $quiz->id)">
                                             Continue Quiz
                                         </x-filament::button>
                                     @else
-                                        <x-filament::button tag="a" color="success"
-                                            class="w-full justify-center"
+                                        <x-filament::button tag="a" color="success" class="w-full justify-center"
                                             :href="route('user.attempt.result', $attempt->id)">
                                             View Result
                                         </x-filament::button>

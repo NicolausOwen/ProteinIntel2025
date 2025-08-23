@@ -14,17 +14,29 @@ class QuizController extends Controller
     public function index($quizId)
     {
         // // cek kalau user sudah menyelesaikan quiz
-        $hasCompletedQuiz = QuizAttempt::where('quiz_id', $quizId)
+        $quizAttempt = QuizAttempt::where('quiz_id', $quizId)
             ->where('user_id', Auth::id())
-            ->whereNotNull('completed_at')
-            ->exists();
-
-        if ($hasCompletedQuiz) {
-            return redirect()->route('home')
-                ->with('message', 'Anda sudah menyelesaikan quiz ini sebelumnya.');
+            ->whereNull('completed_at')
+            ->first();
+        
+        if ($quizAttempt) {
+            $attemptStatus = $quizAttempt->status;
+            $attemptEnd = $quizAttempt->end_at;
+            $attemptId = $quizAttempt->id;
         }
 
-        
+        if($attemptStatus == 'completed' || now()->greaterThanOrEqualTo($attemptEnd)){
+            Notification::make()
+                ->title('Waktu kuis sudah habis')
+                ->success()
+                ->send();  
+
+            app(\App\Services\QuizAttemptService::class)->completeAttempt($quizAttempt);
+            session()->forget('quiz_attempt_session');
+
+            return redirect()->route('user.attempt.result', $attemptId);
+        }
+
 
         // cek kalau user sudah punya attempt tapi belum selesai
         $existingAttempt = QuizAttempt::where('quiz_id', $quizId)
