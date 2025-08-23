@@ -109,7 +109,7 @@
     </div>
     
     <!-- Quiz Navigation -->
-    <div id="quiz-sidebar" class="fixed top-[30%] right-0 transform -translate-y-1/2 z-50 transition-all duration-300">
+    <div id="quiz-sidebar" class="fixed top-[40%] right-0 transform -translate-y-1/2 z-50 transition-all duration-300">
         <!-- Collapsed State Toggle -->
         <div id="sidebar-collapsed" class="bg-gradient-to-tr from-[#667eea] to-[#764ba2] rounded-l-lg shadow-lg border border-gray-200">
             <button onclick="toggleSidebar()" 
@@ -177,59 +177,11 @@
         </div>
     </div>
 
-    <!-- Mobile Version - Bottom Fixed -->
-    <div class="fixed bottom-4 left-4 right-4 z-50 md:hidden">
-        <div id="mobile-nav-collapsed" class="bg-white rounded-lg shadow-lg border border-gray-200">
-            <button onclick="toggleMobileNav()" 
-                    class="w-full flex items-center justify-center gap-2 p-3 text-gray-600 hover:text-blue-600 transition-colors duration-200">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-                <span class="text-sm font-medium">Quiz Navigation</span>
-            </button>
-        </div>
-        
-        <div id="mobile-nav-expanded" class="hidden bg-white rounded-lg shadow-xl border border-gray-200 max-h-64">
-            <!-- Header -->
-            <div class="flex items-center justify-between p-3 border-b border-gray-200">
-                <span class="font-semibold text-gray-800">Quiz Navigation</span>
-                <button onclick="toggleMobileNav()" class="p-1 text-gray-400 hover:text-gray-600 rounded">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-            </div>
-            
-            <!-- Mobile Grid -->
-            <div class="p-3 overflow-y-auto max-h-48">
-                <div class="grid grid-cols-8 gap-2">
-                    @if ($allGroupId)
-                        @foreach ($allGroupId as $groupId)
-                            <a href="{{ route('user.attempt.questions', ['attempt' => $attemptId, 'section' => $sectionId, 'questionGroupId' => $groupId]) }}"
-                            class="flex items-center justify-center w-8 h-8 text-xs font-bold text-blue-600 bg-gray-100 border border-gray-300 rounded transition-all duration-200 
-                                    {{ $groupId == $questionsGroup->id ? 'bg-blue-600 text-white border-blue-600' : '' }}">
-                                {{ $loop->iteration }}
-                            </a>
-                        @endforeach
-                    @else
-                        @foreach ($questionsGroup->questions as $question)
-                            <a href="#question-{{ $question->id }}"
-                            class="flex items-center justify-center w-8 h-8 text-xs font-bold text-blue-600 bg-gray-100 border border-gray-300 rounded transition-all duration-200 
-                                    @if(isset($existingAnswers[$question->id])) bg-green-600 text-white border-green-600 @endif">
-                                {{ $loop->iteration }}
-                            </a>
-                        @endforeach
-                    @endif
-                </div>
-            </div>
-        </div>
-    </div>
-
     <form id="quizForm">
-        <div class="quiz-container">
+        <div class="quiz-container flex flex-col md:flex-row gap-6">
             
             @if(!empty($questionsGroup->shared_content))
-                <div class="passage-panel">
+                <div class="passage-panel w-full md:w-1/3">
                     @php
                         $contentParts = explode('|||', $questionsGroup->shared_content, 2);
                         $passageTitle = $contentParts[0] ?? '';
@@ -247,7 +199,7 @@
                 </div>
             @endif
 
-            <div class="questions-panel @if(empty($questionsGroup->shared_content)) full-width @endif">
+            <div class="questions-panel w-full @if(!empty($questionsGroup->shared_content)) md:w-2/3 @endif">
                 @foreach ($questionsGroup->questions as $question)
                     <div class="question-item" id="question-{{ $question->id }}">
                         <h5>{{ $loop->iteration }}. {{ $question->question_text }}</h5>
