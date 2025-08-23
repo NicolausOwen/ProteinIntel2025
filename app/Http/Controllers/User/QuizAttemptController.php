@@ -184,14 +184,18 @@ class QuizAttemptController extends Controller
 
             $quizAttempt = QuizAttempt::find($attemptId);
             $attemptStatus = $quizAttempt->status;
+            $attemptEnd = $quizAttempt->end_at;
 
-            if($attemptStatus == 'completed'){
+            if($attemptStatus == 'completed' || now()->greaterThanOrEqualTo($attemptEnd)){
                 Notification::make()
                 ->title('Waktu kuis sudah habis')
                 ->success()
                 ->send();  
 
-                return redirect()->route('user.attempt.result');
+                app(\App\Services\QuizAttemptService::class)->completeAttempt($quizAttempt);
+                session()->forget('quiz_attempt_session');
+
+                return redirect()->route('user.attempt.result', $attemptId);
             }
 
             $request->validate([
