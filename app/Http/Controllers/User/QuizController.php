@@ -24,6 +24,8 @@ class QuizController extends Controller
                 ->with('message', 'Anda sudah menyelesaikan quiz ini sebelumnya.');
         }
 
+        
+
         // cek kalau user sudah punya attempt tapi belum selesai
         $existingAttempt = QuizAttempt::where('quiz_id', $quizId)
             ->where('user_id', Auth::id())
@@ -35,12 +37,14 @@ class QuizController extends Controller
             return redirect()->route('user.quiz.sections', $existingAttempt->id);
         }
 
+        dd(session('quiz_attempt_session'));
+
         // kalau belum ada attempt sama sekali → tampil detail quiz
         $attempts = QuizAttempt::where('user_id', Auth::id())->get();
         $quiz = Quiz::select('id', 'title', 'description', 'duration_minutes')->find($quizId);
-        session(['quiz_data' => ['duration_minutes' => $quiz->duration_minutes]]);
 
         $remaining = 0;
+        
 
         return view('pages.quiz.quizDetail', compact('quiz', 'attempts', 'remaining'));
     }
@@ -71,8 +75,44 @@ class QuizController extends Controller
         $quizSession = session('quiz_attempt_session');
 
         if (!$quizSession || !isset($quizSession['end_at'])) {
-            return redirect()->route('filament.user.pages.available-quizzes')
-                ->with('error', 'Session kuis tidak ditemukan atau sudah berakhir.');
+            
+            $attempted = QuizAttempt::where('user_id', Auth::id())
+                ->where('quiz_id', $attempt->quiz_id)
+                ->where('status', 'in_progress') 
+                ->latest()
+                ->first();
+
+            if($attempted){
+                    session([
+                        'quiz_attempt_session' => [
+                            'attempt_id'       => $attempted->id,
+                            'quiz_id'          => $attempted->quiz_id,
+                            'duration_minutes' => $attempted->quiz->duration_minutes,
+                            'started_at'       => $attempted->started_at,
+                            'end_at'           => $attempted->end_at,
+                            'title'            => $attempted->quiz->title,
+                        ]
+                    ]);
+
+                    $quizSession = session('quiz_attempt_session');
+
+                    $remaining = now()->diffInSeconds(\Carbon\Carbon::parse($quizSession['end_at']), false);
+
+                     $sections = $attempted->quiz->sections;
+                    if ($sections->isEmpty()) {
+                        return redirect()->route('filament.user.pages.available-quizzes')
+                            ->with('error', 'Tidak ada section dalam quiz ini.');
+                    }
+
+                     return view('pages.quiz.quizSection', [
+                        'attempt'   => $attempt,
+                        'sections'  => $sections,
+                        'remaining' => $remaining,
+                    ]);
+            }
+
+            
+
         }
 
         $remaining = now()->diffInSeconds(\Carbon\Carbon::parse($quizSession['end_at']), false);
