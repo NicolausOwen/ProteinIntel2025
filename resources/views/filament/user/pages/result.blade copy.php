@@ -1,4 +1,3 @@
-{{-- resources/views/filament/user/pages/dashboard.blade.php --}}
 <x-filament-panels::page>
     <div class="space-y-6 font-[Poppins]">
         <div>

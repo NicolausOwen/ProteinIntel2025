@@ -26,6 +26,9 @@ class UserPanelProvider extends PanelProvider
         return $panel
             ->id('user')
             ->default()
+            ->maxContentWidth('full')
+            ->sidebarCollapsibleOnDesktop(true)
+            ->favicon(asset('img/logo.png'))
             ->darkMode(false)
             ->path('user')
             ->breadcrumbs(false)
@@ -53,7 +56,8 @@ class UserPanelProvider extends PanelProvider
                 UserResource::class,
             ])
             ->pages([
-                Pages\Dashboard::class,
+                \App\Filament\User\Pages\Dashboard::class,
+                // Pages\Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/User/Widgets'), for: 'App\\Filament\\User\\Widgets')
             ->widgets([

@@ -21,42 +21,6 @@
         .quiz-header h2 { margin: 0; font-size: 1.5rem; }
         .timer { font-size: 1.25rem; font-weight: bold; color: white; }
 
-        /* --- Moodle-style Quiz Navigation --- */
-        .quiz-navigation-panel {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            padding: 1rem 2rem;
-            background-color: #ffffff;
-            border-radius: 8px;
-            margin: 0 2rem 1.5rem 2rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        .quiz-navigation-panel a {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 35px;
-            height: 35px;
-            text-decoration: none;
-            color: #007bff;
-            background-color: #e9ecef;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            font-weight: bold;
-            transition: all 0.2s ease-in-out;
-        }
-        .quiz-navigation-panel a:hover { background-color: #dde4ea; }
-        .quiz-navigation-panel a.active {
-            background-color: #007bff;
-            color: #ffffff;
-            border-color: #007bff;
-        }
-        .quiz-navigation-panel a.answered {
-            background-color: #6c757d;
-            color: #ffffff;
-        }
-
         /* --- Layout Container --- */
         .quiz-container {
             display: flex;
@@ -143,24 +107,122 @@
     <div class="quiz-header">
         <h2>{{ $questionsGroup->title }}</h2>
     </div>
+    
+    <!-- Quiz Navigation -->
+    <div id="quiz-sidebar" class="fixed top-[30%] right-0 transform -translate-y-1/2 z-50 transition-all duration-300">
+        <!-- Collapsed State Toggle -->
+        <div id="sidebar-collapsed" class="bg-gradient-to-tr from-[#667eea] to-[#764ba2] rounded-l-lg shadow-lg border border-gray-200">
+            <button onclick="toggleSidebar()" 
+                    class="flex items-center justify-center w-12 h-12 text-white hover:text-blue-600 hover:bg-gray-50 transition-colors duration-200">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+        
+        <!-- Expanded State Panel -->
+        <div id="sidebar-expanded" class="hidden bg-white rounded-lg shadow-xl border border-gray-200 w-80 max-h-96">
+            <!-- Header -->
+            <div class="flex items-center justify-between p-4 border-b border-gray-200 bg-gray-50 rounded-t-lg">
+                <h3 class="font-semibold text-gray-800">Quiz Navigation</h3>
+                <button onclick="toggleSidebar()" 
+                        class="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-200 rounded transition-colors duration-200">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Navigation Content -->
+            <div class="p-4 overflow-y-auto max-h-80">
+                <div class="grid grid-cols-6 gap-2">
+                    @if ($allGroupId)
+                        @foreach ($allGroupId as $groupId)
+                            <a href="{{ route('user.attempt.questions', ['attempt' => $attemptId, 'section' => $sectionId, 'questionGroupId' => $groupId]) }}"
+                            class="flex items-center justify-center w-10 h-10 text-sm font-bold text-blue-600 bg-gray-100 border border-gray-300 rounded hover:bg-blue-50 hover:border-blue-300 transition-all duration-200 
+                                    {{ $groupId == $questionsGroup->id ? 'bg-blue-600 text-white border-blue-600 ring-2 ring-blue-200' : '' }}"
+                            title="Question Group {{ $loop->iteration }}">
+                                {{ $loop->iteration }}
+                            </a>
+                        @endforeach
+                    @else
+                        @foreach ($questionsGroup->questions as $question)
+                            <a href="#question-{{ $question->id }}"
+                            id="nav-{{ $question->id }}"
+                            class="flex items-center justify-center w-10 h-10 text-sm font-bold text-blue-600 bg-gray-100 border border-gray-300 rounded hover:bg-blue-50 hover:border-blue-300 transition-all duration-200 
+                                    @if(isset($existingAnswers[$question->id])) bg-green-600 text-white border-green-600 ring-2 ring-green-200 @endif"
+                            title="Question {{ $loop->iteration }} @if(isset($existingAnswers[$question->id])) - Answered @endif">
+                                {{ $loop->iteration }}
+                            </a>
+                        @endforeach
+                    @endif
+                </div>
+                
+                <!-- Legend -->
+                <div class="mt-4 pt-4 border-t border-gray-200 space-y-2">
+                    <div class="flex items-center gap-2 text-xs text-gray-600">
+                        <div class="w-4 h-4 bg-blue-600 rounded border"></div>
+                        <span>Current/Active</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs text-gray-600">
+                        <div class="w-4 h-4 bg-green-600 rounded border"></div>
+                        <span>Answered</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs text-gray-600">
+                        <div class="w-4 h-4 bg-gray-100 rounded border border-gray-300"></div>
+                        <span>Not answered</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <div class="quiz-navigation-panel">
-        @if ($allGroupId)
-            @foreach ($allGroupId as $groupId)
-                <a href="{{ route('user.attempt.questions', ['attempt' => $attemptId, 'section' => $sectionId, 'questionGroupId' => $groupId]) }}"
-                   class="nav-item {{ $groupId == $questionsGroup->id ? 'active' : '' }}">
-                    {{ $loop->iteration }}
-                </a>
-            @endforeach
-        @else
-            @foreach ($questionsGroup->questions as $question)
-                <a href="#question-{{ $question->id }}"
-                   id="nav-{{ $question->id }}"
-                   class="nav-item @if(isset($existingAnswers[$question->id])) answered @endif">
-                    {{ $loop->iteration }}
-                </a>
-            @endforeach
-        @endif
+    <!-- Mobile Version - Bottom Fixed -->
+    <div class="fixed bottom-4 left-4 right-4 z-50 md:hidden">
+        <div id="mobile-nav-collapsed" class="bg-white rounded-lg shadow-lg border border-gray-200">
+            <button onclick="toggleMobileNav()" 
+                    class="w-full flex items-center justify-center gap-2 p-3 text-gray-600 hover:text-blue-600 transition-colors duration-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+                <span class="text-sm font-medium">Quiz Navigation</span>
+            </button>
+        </div>
+        
+        <div id="mobile-nav-expanded" class="hidden bg-white rounded-lg shadow-xl border border-gray-200 max-h-64">
+            <!-- Header -->
+            <div class="flex items-center justify-between p-3 border-b border-gray-200">
+                <span class="font-semibold text-gray-800">Quiz Navigation</span>
+                <button onclick="toggleMobileNav()" class="p-1 text-gray-400 hover:text-gray-600 rounded">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Mobile Grid -->
+            <div class="p-3 overflow-y-auto max-h-48">
+                <div class="grid grid-cols-8 gap-2">
+                    @if ($allGroupId)
+                        @foreach ($allGroupId as $groupId)
+                            <a href="{{ route('user.attempt.questions', ['attempt' => $attemptId, 'section' => $sectionId, 'questionGroupId' => $groupId]) }}"
+                            class="flex items-center justify-center w-8 h-8 text-xs font-bold text-blue-600 bg-gray-100 border border-gray-300 rounded transition-all duration-200 
+                                    {{ $groupId == $questionsGroup->id ? 'bg-blue-600 text-white border-blue-600' : '' }}">
+                                {{ $loop->iteration }}
+                            </a>
+                        @endforeach
+                    @else
+                        @foreach ($questionsGroup->questions as $question)
+                            <a href="#question-{{ $question->id }}"
+                            class="flex items-center justify-center w-8 h-8 text-xs font-bold text-blue-600 bg-gray-100 border border-gray-300 rounded transition-all duration-200 
+                                    @if(isset($existingAnswers[$question->id])) bg-green-600 text-white border-green-600 @endif">
+                                {{ $loop->iteration }}
+                            </a>
+                        @endforeach
+                    @endif
+                </div>
+            </div>
+        </div>
     </div>
 
     <form id="quizForm">
@@ -378,6 +440,85 @@
                         button.html('✔️ Played');
                     });
                 }
+            });
+        });
+
+        // Desktop sidebar toggle
+        function toggleSidebar() {
+            const collapsed = document.getElementById('sidebar-collapsed');
+            const expanded = document.getElementById('sidebar-expanded');
+            
+            if (expanded.classList.contains('hidden')) {
+                collapsed.classList.add('hidden');
+                expanded.classList.remove('hidden');
+            } else {
+                expanded.classList.add('hidden');
+                collapsed.classList.remove('hidden');
+            }
+        }
+
+        // Mobile navigation toggle
+        function toggleMobileNav() {
+            const collapsed = document.getElementById('mobile-nav-collapsed');
+            const expanded = document.getElementById('mobile-nav-expanded');
+            
+            if (expanded.classList.contains('hidden')) {
+                collapsed.classList.add('hidden');
+                expanded.classList.remove('hidden');
+            } else {
+                expanded.classList.add('hidden');
+                collapsed.classList.remove('hidden');
+            }
+        }
+
+        // Close sidebar when clicking outside
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('quiz-sidebar');
+            const mobileNav = document.getElementById('mobile-nav-expanded');
+            
+            // Close desktop sidebar if click is outside
+            // if (!sidebar.contains(event.target) && !document.getElementById('sidebar-expanded').classList.contains('hidden')) {
+            //     toggleSidebar();
+            // }
+            
+            // Close mobile nav if click is outside
+            if (!event.target.closest('#mobile-nav-collapsed') && !event.target.closest('#mobile-nav-expanded') && !mobileNav.classList.contains('hidden')) {
+                toggleMobileNav();
+            }
+        });
+
+        // Auto-scroll to active question
+        document.addEventListener('DOMContentLoaded', function() {
+            const activeNav = document.querySelector('.bg-blue-600');
+            if (activeNav) {
+                activeNav.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Untuk pilihan (radio button)
+            document.querySelectorAll(".question-option").forEach(input => {
+                input.addEventListener("change", function () {
+                    let qid = this.dataset.questionId;
+                    let navItem = document.getElementById("nav-" + qid);
+                    if (navItem) {
+                        navItem.classList.remove("bg-gray-100", "text-blue-600", "border-gray-300");
+                        navItem.classList.add("bg-green-600", "text-white", "border-green-600", "ring-2", "ring-green-200");
+                    }
+                });
+            });
+
+            // Untuk isian fill in the blank
+            document.querySelectorAll(".fill-blank-input").forEach(input => {
+                input.addEventListener("input", function () {
+                    let qid = this.dataset.questionId;
+                    let navItem = document.getElementById("nav-" + qid);
+
+                    if (this.value.trim() !== "" && navItem) {
+                        navItem.classList.remove("bg-gray-100", "text-blue-600", "border-gray-300");
+                        navItem.classList.add("bg-green-600", "text-white", "border-green-600", "ring-2", "ring-green-200");
+                    }
+                });
             });
         });
     </script>

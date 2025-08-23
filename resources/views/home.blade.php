@@ -206,14 +206,17 @@
 
             <!-- Partner Logos -->
             <div class="max-w-7xl mx-auto">
-                <div class="flex flex-wrap justify-center gap-6">
+                <div class="flex flex-wrap justify-center gap-3 sm:gap-4 md:gap-6">
                     @foreach ($partners as $partner)
                         <div class="bg-gray-800 hover:bg-gray-700 transition-colors duration-300 
-                                    rounded-lg p-4 flex items-center justify-center group 
-                                    w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/6">
+                                    rounded-lg p-3 sm:p-4 flex items-center justify-center group 
+                                    w-[calc(50%-0.375rem)] sm:w-[calc(33.333%-0.667rem)] 
+                                    md:w-[calc(25%-1.125rem)] lg:w-[calc(16.666%-1.25rem)]
+                                    min-h-[80px] sm:min-h-[90px] md:min-h-[100px]">
                             <img src="{{ asset('img/home/medpar/partner' . $partner . '.png') }}" 
                                 alt="Partner {{ $partner }}" 
-                                class="max-h-[70px] object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300">
+                                class="max-h-[50px] sm:max-h-[60px] md:max-h-[70px] w-full object-contain 
+                                    filter grayscale group-hover:grayscale-0 transition-all duration-300">
                         </div>
                     @endforeach
                 </div>
@@ -221,9 +224,11 @@
 
             <!-- Call to Action -->
             <div class="text-center mt-12">
-                <p class="text-gray-300 mb-6">Tertarik menjadi media partner kami?</p>
+                <p class="text-gray-300 mb-6 text-sm sm:text-base">Tertarik menjadi media partner kami?</p>
                 <a href="https://wa.me/6289624749794" 
-                    class="inline-block bg-white hover:bg-gray-200 text-gray-900 font-semibold py-3 px-6 rounded-lg shadow-md transition duration-300">
+                    class="inline-block bg-white hover:bg-gray-200 text-gray-900 font-semibold 
+                        py-2.5 px-5 sm:py-3 sm:px-6 rounded-lg shadow-md transition duration-300 
+                        text-sm sm:text-base">
                         Hubungi Kami
                 </a>
             </div>
