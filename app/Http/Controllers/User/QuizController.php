@@ -96,7 +96,7 @@ class QuizController extends Controller
 
                     $remaining = now()->diffInSeconds(\Carbon\Carbon::parse($quizSession['end_at']), false);
 
-                     $sections = $attempted->quiz->sections;
+                    $sections = $attempted->quiz->sections;
                     if ($sections->isEmpty()) {
                         return redirect()->route('filament.user.pages.available-quizzes')
                             ->with('error', 'Tidak ada section dalam quiz ini.');

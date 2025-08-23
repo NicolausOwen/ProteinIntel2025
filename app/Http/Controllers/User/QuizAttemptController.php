@@ -181,6 +181,19 @@ class QuizAttemptController extends Controller
     public function saveAnswerAjax(Request $request, $attemptId)
     {
         try {
+
+            $quizAttempt = QuizAttempt::find($attemptId);
+            $attemptStatus = $quizAttempt->status;
+
+            if($attemptStatus == 'completed'){
+                Notification::make()
+                ->title('Waktu kuis sudah habis')
+                ->success()
+                ->send();  
+
+                return redirect()->route('user.attempt.result');
+            }
+
             $request->validate([
                 'answers' => 'required|array',
                 'question_group_id' => 'required|integer',
