@@ -37,8 +37,6 @@ class QuizController extends Controller
             return redirect()->route('user.quiz.sections', $existingAttempt->id);
         }
 
-        dd(session('quiz_attempt_session'));
-
         // kalau belum ada attempt sama sekali → tampil detail quiz
         $attempts = QuizAttempt::where('user_id', Auth::id())->get();
         $quiz = Quiz::select('id', 'title', 'description', 'duration_minutes')->find($quizId);
