@@ -23,9 +23,8 @@ class QuizController extends Controller
             $attemptStatus = $quizAttempt->status;
             $attemptEnd = $quizAttempt->end_at;
             $attemptId = $quizAttempt->id;
-        }
 
-        if($attemptStatus == 'completed' || now()->greaterThanOrEqualTo($attemptEnd)){
+            if($attemptStatus == 'completed' || now()->greaterThanOrEqualTo($attemptEnd)){
             Notification::make()
                 ->title('Waktu kuis sudah habis')
                 ->success()
@@ -35,7 +34,10 @@ class QuizController extends Controller
             session()->forget('quiz_attempt_session');
 
             return redirect()->route('user.attempt.result', $attemptId);
+            }
         }
+
+        
 
 
         // cek kalau user sudah punya attempt tapi belum selesai
