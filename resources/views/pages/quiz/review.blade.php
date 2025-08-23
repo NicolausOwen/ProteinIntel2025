@@ -38,5 +38,13 @@
                 @endif --}}
             </div>
         @endforeach
+
+        {{-- Action button --}}
+        <div class="flex justify-center">
+            <a href="{{ route('filament.user.pages.dashboard') }}"
+                class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-blue-300 inline-block text-center">
+                Return to Dashboard
+            </a>
+        </div>
     </div>
 @endsection

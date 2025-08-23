@@ -286,7 +286,7 @@
             </div>
 
             <!-- Actions -->
-            <div class="flex justify-center">
+            <div class="flex justify-center gap-4">
                 <a href="{{ route('user.attempt.review', $attempt->id) }}"
                     class="inline-flex items-center gap-3 px-8 py-4 gradient-primary text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
                     <div class="w-5 h-5">
@@ -297,6 +297,11 @@
                         </svg>
                     </div>
                     <span>Review Jawaban</span>
+                </a>
+
+                <a href="{{ route('filament.user.pages.dashboard') }}"
+                    class="inline-flex items-center gap-3 px-8 py-4 gradient-primary text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
+                    <span>Return to Dashboard</span>
                 </a>
             </div>
         </div>
