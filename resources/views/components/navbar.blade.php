@@ -95,7 +95,7 @@
 
             @if (Route::has('login'))
                 @auth
-                    <a href="{{ url('/dashboard') }}"
+                    <a href="{{ route('filament.user.pages.dashboard') }}"
                        class="block text-white font-semibold rounded-[10px] px-3 py-2"
                        onmouseover="this.style.backgroundColor='#B8CFCE'; this.style.color='#000'"
                        onmouseout="this.style.backgroundColor='transparent'; this.style.color='#fff'">

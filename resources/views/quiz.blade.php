@@ -174,7 +174,7 @@
                             </div>
 
                             <!-- Start Quiz Button (hanya muncul kalau countdown expired) -->
-                            <a :href="'{{url('quiz')}}/' + activeCategory.id"
+                            <a href="{{ route('filament.user.pages.dashboard') }}"
                             x-show="$store.quizState.expired" x-cloak
                             class="inline-block bg-[#333446] text-[#B8CFCE] hover:bg-[#EAEFEF] hover:text-[#333446] 
                                     focus:ring-4 focus:outline-none focus:ring-[#B8CFCE] font-medium rounded-lg 
