@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -54,6 +55,23 @@ class User extends Authenticatable implements FilamentUser
     public function quizAttempts()
     {
         return $this->hasMany(QuizAttempt::class);
+    }
+
+    // Ini adalah method yang hilang dan perlu ditambahkan
+    public function canAccessPanel(Panel $panel): bool
+    {
+        // Izinkan user dengan peran 'admin' untuk mengakses panel 'admin'
+        if ($panel->getId() === 'admin') {
+            return $this->hasRole('admin');
+        }
+
+        // Izinkan user dengan peran 'user' untuk mengakses panel 'user'
+        if ($panel->getId() === 'user') {
+            return $this->hasRole('user');
+        }
+
+        // Tolak akses ke panel lain
+        return false;
     }
 
 }
