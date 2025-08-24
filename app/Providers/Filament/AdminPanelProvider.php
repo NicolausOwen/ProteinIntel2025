@@ -3,7 +3,6 @@
 namespace App\Providers\Filament;
 
 use App\Http\Middleware\EnsureUserIsAdmin;
-use Illuminate\Support\Facades\Auth;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -30,7 +29,6 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->authGuard('web')
-            ->can(fn() => Auth::user()->hasRole('admin'))
             ->login()
             ->colors([
                 'primary' => '#2C2C3C',
