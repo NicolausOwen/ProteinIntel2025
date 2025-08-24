@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\User\Resources\UserResource;
+use Illuminate\Support\Facades\Auth;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -31,6 +32,7 @@ class UserPanelProvider extends PanelProvider
             ->favicon(asset('img/logo.png'))
             ->darkMode(false)
             ->path('user')
+            ->can(fn() => Auth::user()->hasRole('user'))
             ->breadcrumbs(false)
             ->colors([
                 'primary' => '#2C2C3C',
