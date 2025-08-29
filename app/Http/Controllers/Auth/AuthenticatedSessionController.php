@@ -28,8 +28,16 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        // men dio admin
+
+        if(Auth::check() && Auth::user()->hasRole('admin')){
+            return redirect()->intended(route('filament.admin.pages.dashboard'));
+        }
+
+
+        // men user biaso
         // return redirect()->intended(route('dashboard', absolute: false));
-        return redirect()->intended(route('filament.admin.pages.dashboard'));
+        return redirect()->intended(route('filament.user.pages.dashboard'));
 
     }
 
