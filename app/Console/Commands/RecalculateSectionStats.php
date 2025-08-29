@@ -15,8 +15,10 @@ class RecalculateSectionStats extends Command
     {
         $attemptId = $this->argument('attemptId');
 
-        $query = QuizAttempt::with(['quiz.sections', 'answers.question'])
-            ->when($attemptId, fn($q) => $q->where('id', $attemptId));
+        $query = QuizAttempt::with([
+            'quiz.sections',
+            'answers.question.group.section'
+        ])->when($attemptId, fn($q) => $q->where('id', $attemptId));
 
         $attempts = $query->get();
 
@@ -27,16 +29,13 @@ class RecalculateSectionStats extends Command
 
         foreach ($attempts as $attempt) {
             foreach ($attempt->quiz->sections as $section) {
-                $correctAnswers = $attempt->answers()
-                    ->whereHas('question.group', fn($q) => $q->where('section_id', $section->id))
-                    ->where('is_correct', true)
-                    ->count();
+                // Ambil semua jawaban user di section ini
+                $answersInSection = $attempt->answers
+                    ->filter(fn($a) => $a->question?->group?->section?->id === $section->id);
 
-                $totalQuestions = $section->groups()
-                    ->withCount('questions')
-                    ->get()
-                    ->sum('questions_count');
-
+                $totalAnswers = $answersInSection->count(); // jumlah soal yg user kerjakan
+                $correctAnswers = $answersInSection->where('is_correct', true)->count();
+                $wrongAnswers = max($totalAnswers - $correctAnswers, 0); // biar ga negatif
 
                 QuizAttemptSectionStat::updateOrCreate(
                     [
@@ -44,8 +43,11 @@ class RecalculateSectionStats extends Command
                         'section_id' => $section->id,
                     ],
                     [
-                        'correct_count' => $correctAnswers,
-                        'total_count' => $totalQuestions,
+                        'total_questions' => $totalAnswers,
+                        'correct_answers' => $correctAnswers,
+                        'wrong_answers' => $wrongAnswers,
+                        'updated_at' => now(),
+                        'created_at' => now(),
                     ]
                 );
             }
