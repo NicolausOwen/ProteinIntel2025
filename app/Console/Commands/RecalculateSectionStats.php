@@ -16,7 +16,7 @@ class RecalculateSectionStats extends Command
         $attemptId = $this->argument('attemptId');
 
         $query = QuizAttempt::with([
-            'quiz.sections',
+            'quiz.sections.groups.questions',
             'answers.question.group.section'
         ])->when($attemptId, fn($q) => $q->where('id', $attemptId));
 
@@ -29,21 +29,27 @@ class RecalculateSectionStats extends Command
 
         foreach ($attempts as $attempt) {
             foreach ($attempt->quiz->sections as $section) {
-                // Ambil semua jawaban user di section ini
-                $answersInSection = $attempt->answers
-                    ->filter(fn($a) => $a->question?->group?->section?->id === $section->id);
+                // Hitung jumlah soal resmi di section ini
+                $totalQuestions = $section->groups->sum(fn($g) => $g->questions->count());
 
-                $totalAnswers = $answersInSection->count(); // jumlah soal yg user kerjakan
-                $correctAnswers = $answersInSection->where('is_correct', true)->count();
-                $wrongAnswers = max($totalAnswers - $correctAnswers, 0); // biar ga negatif
+                // Hitung jawaban benar user
+                $correctAnswers = $attempt->answers
+                    ->filter(fn($a) => $a->question?->group?->section?->id === $section->id)
+                    ->where('is_correct', true)
+                    ->count();
 
+                // Jangan sampai lebih dari total
+                $correctAnswers = min($correctAnswers, $totalQuestions);
+                $wrongAnswers = max($totalQuestions - $correctAnswers, 0);
+
+                // Update ke DB
                 QuizAttemptSectionStat::updateOrCreate(
                     [
                         'quiz_attempt_id' => $attempt->id,
                         'section_id' => $section->id,
                     ],
                     [
-                        'total_questions' => $totalAnswers,
+                        'total_questions' => $totalQuestions,
                         'correct_answers' => $correctAnswers,
                         'wrong_answers' => $wrongAnswers,
                         'updated_at' => now(),
@@ -52,7 +58,7 @@ class RecalculateSectionStats extends Command
                 );
             }
 
-            $this->info("Updated stats for attempt ID: {$attempt->id}");
+            $this->info("✅ Updated stats for attempt ID: {$attempt->id}");
         }
 
         return Command::SUCCESS;
