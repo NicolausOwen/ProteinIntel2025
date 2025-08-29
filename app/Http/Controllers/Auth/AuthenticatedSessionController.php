@@ -30,10 +30,9 @@ class AuthenticatedSessionController extends Controller
 
         // men dio admin
 
-        if(Auth::check() && Auth::user()->hasRole('admin')){
+        if(Auth::user()->hasRole('admin')){
             return redirect()->intended(route('filament.admin.pages.dashboard'));
         }
-
 
         // men user biaso
         // return redirect()->intended(route('dashboard', absolute: false));
