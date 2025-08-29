@@ -47,17 +47,22 @@ class QuizAttempt extends Model
         return $this->hasMany(Answer::class);
     }
 
-    // Scope untuk yang sudah selesai
     public function scopeCompleted($query)
     {
         return $query->where('status', 'completed');
     }
 
-    // Scope untuk yang masih berjalan
+
     public function scopeInProgress($query)
     {
         return $query->where('status', 'in_progress');
     }
+
+    public function sectionStats()
+    {
+        return $this->hasMany(\App\Models\QuizAttemptSectionStat::class);
+    }
+
 
     protected static function booted()
     {

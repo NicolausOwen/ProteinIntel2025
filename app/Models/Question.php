@@ -38,9 +38,16 @@ class Question extends Model
     {
         return $this->belongsTo(QuestionGroup::class, 'question_group_id');
     }
-    public function section(): BelongsTo
+    public function section()
     {
-        return $this->belongsTo(Section::class, 'section_id');
+        return $this->hasOneThrough(
+            Section::class,
+            QuestionGroup::class,
+            'id',          // Foreign key di question_groups
+            'id',          // Primary key di sections
+            'question_group_id', // Foreign key di questions
+            'section_id'   // Foreign key di question_groups
+        );
     }
 
     protected static function booted()

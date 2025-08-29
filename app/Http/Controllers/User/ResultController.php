@@ -60,6 +60,7 @@ class ResultController extends Controller
     {
         $attempt = QuizAttempt::with([
             'quiz',
+            'answers.question.group.section', // tambahkan relasi ke group->section
             'answers.question.options',
             'answers.selectedOption'
         ])
@@ -67,8 +68,45 @@ class ResultController extends Controller
             ->where('user_id', Auth::id())
             ->firstOrFail();
 
+        // Hitung benar/salah per section
+        $sectionStats = $attempt->answers
+            ->groupBy(fn($answer) => $answer->question->group->section->id ?? null)
+            ->map(function ($answers) {
+                $total = $answers->count();
+                $correct = $answers->where('is_correct', true)->count();
+                $wrong = $total - $correct;
+
+                return [
+                    'section_id' => $answers->first()->question->group->section->id ?? null,
+                    'total' => $total,
+                    'correct' => $correct,
+                    'wrong' => $wrong,
+                    'percentage' => $total > 0 ? round(($correct / $total) * 100, 2) : 0
+                ];
+            });
+
+
+        foreach ($sectionStats as $stats) {
+            if ($stats['section_id']) {
+                DB::table('quiz_attempt_section_stats')->updateOrInsert(
+                    [
+                        'quiz_attempt_id' => $attempt->id,
+                        'section_id' => $stats['section_id'],
+                    ],
+                    [
+                        'total_questions' => $stats['total'],
+                        'correct_answers' => $stats['correct'],
+                        'wrong_answers' => $stats['wrong'],
+                        'updated_at' => now(),
+                    ]
+                );
+            }
+        }
+
         return view('pages.quiz.review', [
-            'attempt' => $attempt
+            'attempt' => $attempt,
+            'sectionStats' => $sectionStats
         ]);
     }
+
 }

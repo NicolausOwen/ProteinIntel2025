@@ -40,6 +40,20 @@ class LeaderboardWidget extends BaseWidget
                 TextColumn::make('score')
                     ->label('Skor'),
 
+                TextColumn::make('section_stats')
+                    ->label('Section Stats')
+                    ->getStateUsing(function ($record) {
+                        return $record->sectionStats
+                            ->map(function ($stat) {
+                                return $stat->section->name .
+                                    ' (✔ ' . $stat->correct_answers .
+                                    ' / ✖ ' . $stat->wrong_answers . ')';
+                            })
+                            ->join(', ');
+                    })
+                    ->toggleable()
+                    ->wrap(), // biar kalau panjang bisa multi-line
+
                 TextColumn::make('percentage')
                     ->label('Persentase')
                     ->formatStateUsing(fn($state) => $state . '%'),
