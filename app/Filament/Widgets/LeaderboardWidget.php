@@ -3,14 +3,10 @@
 namespace App\Filament\Widgets;
 
 use App\Models\QuizAttempt;
-use App\Models\User;
-
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
-
 use Filament\Tables\Columns\TextColumn;
-use Illuminate\Database\Eloquent\Builder;
 
 class LeaderboardWidget extends BaseWidget
 {
@@ -23,7 +19,7 @@ class LeaderboardWidget extends BaseWidget
         return $table
             ->query(
                 QuizAttempt::query()
-                    ->with(['user', 'quiz'])
+                    ->with(['user', 'quiz', 'sectionStats.section'])
                     ->orderByDesc('score')
                     ->limit(5)
             )
@@ -32,6 +28,12 @@ class LeaderboardWidget extends BaseWidget
                     ->label('User')
                     ->sortable()
                     ->searchable(),
+
+                TextColumn::make('user.email')
+                    ->label('Email')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
 
                 TextColumn::make('quiz.title')
                     ->label('Quiz')
@@ -52,7 +54,7 @@ class LeaderboardWidget extends BaseWidget
                             ->join(', ');
                     })
                     ->toggleable()
-                    ->wrap(), // biar kalau panjang bisa multi-line
+                    ->wrap(),
 
                 TextColumn::make('percentage')
                     ->label('Persentase')
